@@ -8,6 +8,6 @@ public class ReviewConfiguration : IEntityTypeConfiguration<Review>
 {
     public void Configure(EntityTypeBuilder<Review> builder)
     {
-        builder.HasOne<Book>().WithMany().HasForeignKey(review => review.BookId);
+        builder.HasOne<Book>().WithMany(book => book.Reviews).HasForeignKey(review => review.BookId);
     }
 }

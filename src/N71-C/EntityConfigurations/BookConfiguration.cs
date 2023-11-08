@@ -28,7 +28,7 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         // One-to-One - HasOne WithOne
         // One-to-Many - HasMany WithOne yoki HasOne WithMany
         // Many-to-Many - HasMany WithMany
-        
-        builder.HasOne<Author>().WithMany().HasForeignKey(book => book.AuthorId);
+
+        builder.HasOne<Author>().WithMany(author => author.Books).HasForeignKey(book => book.AuthorId).OnDelete(DeleteBehavior.Restrict);
     }
 }

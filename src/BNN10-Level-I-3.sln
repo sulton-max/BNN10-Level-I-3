@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "N71", "N71", "{0A9ED466-45F0-4429-BA64-6556B6A92E6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N71-C", "N71-C\N71-C.csproj", "{8D55E901-89E8-4364-B4D3-72F95BC4FF57}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8D55E901-89E8-4364-B4D3-72F95BC4FF57} = {0A9ED466-45F0-4429-BA64-6556B6A92E6F}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D55E901-89E8-4364-B4D3-72F95BC4FF57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D55E901-89E8-4364-B4D3-72F95BC4FF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D55E901-89E8-4364-B4D3-72F95BC4FF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D55E901-89E8-4364-B4D3-72F95BC4FF57}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
