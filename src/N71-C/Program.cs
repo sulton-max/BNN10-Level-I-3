@@ -120,8 +120,6 @@ var dbContext = new LibraryDbContext(options.Options);
 // Delete - entity ni EF Core o'chiradi, entity state - Deleted
 var authorToDelete = dbContext.Authors.OrderBy(author => author.Id).FirstOrDefault() ?? throw new InvalidOperationException();
 
-authorToDelete.Name = "test test";
-
 Console.WriteLine("test");
 
 var yetauthorToDelete = dbContext.Authors.OrderBy(author => author.Id).FirstOrDefault() ?? throw new InvalidOperationException();
