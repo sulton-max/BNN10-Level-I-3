@@ -1,4 +1,4 @@
-﻿using Notifications.Infrastructure.Domain.Common.Exceptions;
+﻿using N75_C.Models.Exceptions;
 
 namespace N75_C.Extensions;
 

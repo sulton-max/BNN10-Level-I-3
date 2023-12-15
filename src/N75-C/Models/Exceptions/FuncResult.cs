@@ -1,4 +1,4 @@
-﻿namespace Notifications.Infrastructure.Domain.Common.Exceptions;
+﻿namespace N75_C.Models.Exceptions;
 
 public class FuncResult<T>
 {

@@ -4,7 +4,6 @@ using N75_C.Extensions;
 using N75_C.Models.Common;
 using N75_C.Models.Entities;
 using N75_C.Models.Settings;
-using Notifications.Infrastructure.Domain.Common.Exceptions;
 using Polly;
 
 namespace N75_C.Services;

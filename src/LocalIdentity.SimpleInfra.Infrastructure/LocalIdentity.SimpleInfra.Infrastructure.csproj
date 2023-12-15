@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\LocalIdentity.SimpleInfra.Application\LocalIdentity.SimpleInfra.Application.csproj"/>
+        <ProjectReference Include="..\LocalIdentity.SimpleInfra.Persistence\LocalIdentity.SimpleInfra.Persistence.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="12.0.1"/>
+        <PackageReference Include="DeepCloner" Version="0.10.4"/>
+        <PackageReference Include="FluentValidation" Version="11.8.1"/>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="LazyCache" Version="2.4.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="Twilio" Version="7.0.0-rc.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Common\Notifications\" />
+    </ItemGroup>
+
+</Project>
