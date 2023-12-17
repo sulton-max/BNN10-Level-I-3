@@ -9,6 +9,6 @@ public class ProcessNotificationEvent : NotificationEvent
     public NotificationType? Type { get; set; }
 
     public Dictionary<string, string>? Variables { get; set; }
-    
-    public override string EventTypeDiscriminator => NotificationProcessingEvent.OnRendering.ToString();
+
+    public override string GetTypeDiscriminator() => NotificationProcessingEvent.OnProcessing.ToString();
 }

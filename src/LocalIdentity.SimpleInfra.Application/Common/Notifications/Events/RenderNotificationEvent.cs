@@ -12,6 +12,6 @@ public class RenderNotificationEvent : NotificationEvent
     public User ReceiverUser { get; init; } = default!;
 
     public Dictionary<string, string> Variables { get; set; } = new();
-
-    public override string EventTypeDiscriminator => NotificationProcessingEvent.OnRendering.ToString();
+    
+    public override string GetTypeDiscriminator() => NotificationProcessingEvent.OnRendering.ToString();
 }

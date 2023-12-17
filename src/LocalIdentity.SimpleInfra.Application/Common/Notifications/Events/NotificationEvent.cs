@@ -1,20 +1,23 @@
-﻿using LocalIdentity.SimpleInfra.Application.Common.Notifications.Mappers;
-using LocalIdentity.SimpleInfra.Domain.Common.Events;
+﻿using LocalIdentity.SimpleInfra.Domain.Common.Events;
 using LocalIdentity.SimpleInfra.Domain.Enums;
+using LocalIdentity.SimpleInfra.Domain.Serializers;
 using Newtonsoft.Json;
 
 namespace LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
 
-[JsonConverter(typeof(NotificationEventConverter))]
-public abstract class NotificationEvent : Event
+[JsonConverter(typeof(JsonTypeConverter<NotificationEvent>))]
+public class NotificationEvent : Event
 {
     public Guid SenderUserId { get; init; }
 
     public Guid ReceiverUserId { get; init; }
 
-    public override Type GetEventType(string eventTypeDiscriminator)
+    public override string GetTypeDiscriminator() =>
+        throw new NotSupportedException($"{typeof(NotificationEvent)} doesn't support type discriminator.");
+
+    public override Type ResolveType(string typeName)
     {
-        var eventType = Enum.Parse<NotificationProcessingEvent>(eventTypeDiscriminator);
+        var eventType = Enum.Parse<NotificationProcessingEvent>(typeName);
 
         return eventType switch
         {

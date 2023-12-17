@@ -7,5 +7,5 @@ public class SendNotificationEvent : NotificationEvent
 {
     public NotificationMessage Message { get; set; } = default!;
 
-    public override string EventTypeDiscriminator => NotificationProcessingEvent.OnSending.ToString();
+    public override string GetTypeDiscriminator() => NotificationProcessingEvent.OnSending.ToString();
 }

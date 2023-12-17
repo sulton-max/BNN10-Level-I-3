@@ -1,11 +1,8 @@
 ﻿using System.Text;
 using LocalIdentity.SimpleInfra.Application.Common.EventBus.Brokers;
-using LocalIdentity.SimpleInfra.Application.Common.Notifications.Mappers;
 using LocalIdentity.SimpleInfra.Application.Common.Serialization;
 using LocalIdentity.SimpleInfra.Domain.Common.Events;
-using LocalIdentity.SimpleInfra.Domain.Extensions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Brokers;

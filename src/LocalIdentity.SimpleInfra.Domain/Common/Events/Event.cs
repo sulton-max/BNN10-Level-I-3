@@ -1,20 +1,22 @@
-﻿namespace LocalIdentity.SimpleInfra.Domain.Common.Events;
+﻿using LocalIdentity.SimpleInfra.Domain.Common.Serialization;
 
-public abstract class Event
+namespace LocalIdentity.SimpleInfra.Domain.Common.Events;
+
+public abstract class Event : ITypeResolver
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
     public DateTimeOffset CreatedTime { get; set; } = DateTimeOffset.Now;
 
-    public uint RetryAttemptsCount { get; set; }
+    public bool Redelivered { get; set; }
 
     /// <summary>
     /// For serialization
     /// </summary>
-    public abstract string EventTypeDiscriminator { get; }
+    public abstract string GetTypeDiscriminator();
 
     /// <summary>
-    ///  For deserialization
+    /// For deserialization
     /// </summary>
-    public abstract Type GetEventType(string eventTypeDiscriminator);
+    public abstract Type ResolveType(string typeName);
 }

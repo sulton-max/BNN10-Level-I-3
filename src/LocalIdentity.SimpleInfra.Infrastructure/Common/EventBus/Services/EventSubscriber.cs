@@ -1,9 +1,7 @@
 ﻿using System.Text;
 using LocalIdentity.SimpleInfra.Application.Common.EventBus.Brokers;
-using LocalIdentity.SimpleInfra.Application.Common.Notifications.Mappers;
 using LocalIdentity.SimpleInfra.Application.Common.Serialization;
 using LocalIdentity.SimpleInfra.Domain.Common.Events;
-using LocalIdentity.SimpleInfra.Domain.Extensions;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -12,32 +10,18 @@ using RabbitMQ.Client.Events;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Services;
 
-public abstract class EventSubscriber<TEvent> : IEventSubscriber where TEvent : Event
+public abstract class EventSubscriber<TEvent>(
+    IRabbitMqConnectionProvider rabbitMqConnectionProvider,
+    IOptions<EventBusSubscriberSettings> eventBusSubscriberSettings,
+    IEnumerable<string> queueNames,
+    IJsonSerializationSettingsProvider jsonSerializationSettingsProvider
+) : IEventSubscriber where TEvent : Event
 {
-    private readonly EventBusSubscriberSettings _eventBusSubscriberSettings;
+    private readonly EventBusSubscriberSettings _eventBusSubscriberSettings = eventBusSubscriberSettings.Value;
     private IEnumerable<EventingBasicConsumer> _consumers = default!;
-    private readonly JsonSerializerSettings _jsonSerializerSettings;
-    private readonly IRabbitMqConnectionProvider _rabbitMqConnectionProvider;
-    private readonly IEnumerable<string> _queueNames;
+    private readonly JsonSerializerSettings _jsonSerializerSettings = jsonSerializationSettingsProvider.Get(true);
 
     protected IChannel Channel = default!;
-
-    protected EventSubscriber(
-        IRabbitMqConnectionProvider rabbitMqConnectionProvider,
-        IOptions<EventBusSubscriberSettings> eventBusSubscriberSettings,
-        IEnumerable<string> queueNames,
-        IJsonSerializationSettingsProvider jsonSerializationSettingsProvider
-    )
-    {
-        _rabbitMqConnectionProvider = rabbitMqConnectionProvider;
-        _eventBusSubscriberSettings = eventBusSubscriberSettings.Value;
-        _queueNames = queueNames;
-
-        // Set the serializer settings
-        _jsonSerializerSettings = jsonSerializationSettingsProvider.Get(true);
-        // _jsonSerializerSettings.Converters = [new EventConverter()];
-        // _jsonSerializerSettings.Converters = typeof(TEvent).GetJsonConverters();
-    }
 
     public async ValueTask StartAsync(CancellationToken token)
     {
@@ -53,14 +37,14 @@ public abstract class EventSubscriber<TEvent> : IEventSubscriber where TEvent : 
 
     protected virtual async ValueTask SetChannelAsync()
     {
-        Channel = await _rabbitMqConnectionProvider.CreateChannelAsync();
+        Channel = await rabbitMqConnectionProvider.CreateChannelAsync();
         await Channel.BasicQosAsync(0, _eventBusSubscriberSettings.PrefetchCount, false);
     }
 
     protected virtual async ValueTask SetConsumerAsync(CancellationToken cancellationToken)
     {
         _consumers = await Task.WhenAll(
-            _queueNames.Select(
+            queueNames.Select(
                 async queueName =>
                 {
                     var consumer = new EventingBasicConsumer(Channel);
@@ -77,6 +61,7 @@ public abstract class EventSubscriber<TEvent> : IEventSubscriber where TEvent : 
     {
         var message = Encoding.UTF8.GetString(ea.Body.ToArray());
         var @event = (TEvent)JsonConvert.DeserializeObject(message, typeof(TEvent), _jsonSerializerSettings)!;
+        @event.Redelivered = ea.Redelivered;
         var result = await ProcessAsync(@event, cancellationToken);
 
         if (result.Result)
