@@ -7,20 +7,18 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Brokers;
 
 public class RabbitMqConnectionProvider : IRabbitMqConnectionProvider
 {
-    private readonly RabbitMqConnectionSettings _rabbitMqConnectionSettings;
-
-    private ConnectionFactory _connectionFactory;
+    private readonly ConnectionFactory _connectionFactory;
 
     private IConnection? _connection;
 
     public RabbitMqConnectionProvider(IOptions<RabbitMqConnectionSettings> rabbitMqConnectionSettings)
     {
-        _rabbitMqConnectionSettings = rabbitMqConnectionSettings.Value;
+        var rabbitMqConnectionSettings1 = rabbitMqConnectionSettings.Value;
 
         _connectionFactory = new ConnectionFactory
         {
-            HostName = _rabbitMqConnectionSettings.HostName,
-            Port = _rabbitMqConnectionSettings.Port
+            HostName = rabbitMqConnectionSettings1.HostName,
+            Port = rabbitMqConnectionSettings1.Port
         };
     }
 

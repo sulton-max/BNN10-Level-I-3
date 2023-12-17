@@ -19,12 +19,6 @@ public static class SeedDataExtensions
         if (!await notificationDbContext.EmailTemplates.AnyAsync())
             await notificationDbContext.SeedEmailTemplates(webHostEnvironment);
 
-        if (!await notificationDbContext.Users.AnyAsync())
-            await notificationDbContext.SeedUsersAsync();
-
-        // if (!await notificationDbContext.UserSettings.AnyAsync())
-        //     await notificationDbContext.SeedUserSettingsAsync();
-
         if (notificationDbContext.ChangeTracker.HasChanges())
             await notificationDbContext.SaveChangesAsync();
     }
@@ -48,27 +42,6 @@ public static class SeedDataExtensions
             }
         );
         await identityDbContext.SaveChangesAsync();
-    }
-
-    private static async ValueTask SeedUsersAsync(this NotificationDbContext notificationDbContext)
-    {
-        await notificationDbContext.Users.AddRangeAsync(
-            new User
-            {
-                EmailAddress = "sultonbek.rakhimov.recovery@gmail.com",
-                Role = RoleType.System
-            },
-            new User
-            {
-                Id = Guid.Parse("6c0021b5-818c-4f4c-b622-97f73fab473e"),
-                EmailAddress = "sultonbek.rakhimov@gmail.com",
-            },
-            new User
-            {
-                Id = Guid.Parse("12c7e7df-4484-4181-bf96-d340e229c16b"),
-                EmailAddress = "jane.doe@gmail.com",
-            }
-        );
     }
 
     private static async ValueTask SeedEmailTemplates(this NotificationDbContext notificationDbContext, IWebHostEnvironment webHostEnvironment)

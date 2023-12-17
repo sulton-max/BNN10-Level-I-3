@@ -5,14 +5,20 @@ using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
 using LocalIdentity.SimpleInfra.Application.Common.EventBus.Brokers;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Brokers;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Brokers;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
+using LocalIdentity.SimpleInfra.Application.Common.Serialization;
 using LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Caching.Brokers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Brokers;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Brokers;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.EventSubscriber;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Services;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.Serialization;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Persistence.Caching.Brokers;
@@ -35,6 +41,14 @@ public static partial class HostConfiguration
         Assemblies.Add(Assembly.GetExecutingAssembly());
     }
 
+    private static WebApplicationBuilder AddSerializers(this WebApplicationBuilder builder)
+    {
+        // register json serialization settings
+        builder.Services.AddSingleton<IJsonSerializationSettingsProvider, JsonSerializationSettingsProvider>();
+
+        return builder;
+    }
+    
     private static WebApplicationBuilder AddValidators(this WebApplicationBuilder builder)
     {
         // register configurations 
@@ -75,18 +89,21 @@ public static partial class HostConfiguration
     private static WebApplicationBuilder AddEventBus(this WebApplicationBuilder builder)
     {
         // register cache settings
-        builder.Services.Configure<RabbitMqConnectionSettings>(builder.Configuration.GetSection(nameof(RabbitMqConnectionSettings)));
+        builder.Services.Configure<RabbitMqConnectionSettings>(builder.Configuration.GetSection(nameof(RabbitMqConnectionSettings)))
+            .Configure<NotificationSubscriberSettings>(builder.Configuration.GetSection(nameof(NotificationSubscriberSettings)));
 
         // register brokers
-        builder.Services
-            .AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>()
-            .AddSingleton<IEventBroker, RabbitMqEventBroker>();
+        builder.Services.AddSingleton<IRabbitMqConnectionProvider, RabbitMqConnectionProvider>()
+            .AddSingleton<IEventBusBroker, RabbitMqEventBusBroker>();
 
-        // register 
+        // register general background service
+        builder.Services.AddHostedService<EventBusBackgroundService>();
+
+        // register event subscribers
+        builder.Services.AddSingleton<IEventSubscriber, NotificationSubscriber>();
 
         return builder;
     }
-
 
     private static WebApplicationBuilder AddNotificationInfrastructure(this WebApplicationBuilder builder)
     {
@@ -111,10 +128,6 @@ public static partial class HostConfiguration
 
         // register helper foundation services
         builder.Services.AddScoped<IEmailSenderService, EmailSenderService>().AddScoped<IEmailRenderingService, EmailRenderingService>();
-
-        // register orchestration and aggregation services
-        builder.Services.AddScoped<IEmailOrchestrationService, EmailOrchestrationService>()
-            .AddScoped<INotificationAggregatorService, NotificationAggregatorService>();
 
         return builder;
     }

@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using FluentValidation;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using Microsoft.Extensions.Options;
@@ -14,10 +14,7 @@ public class EmailRenderingService : IEmailRenderingService
     private readonly IValidator<EmailMessage> _emailMessageValidator;
     private readonly TemplateRenderingSettings _templateRenderingSettings;
 
-    public EmailRenderingService(
-        IOptions<TemplateRenderingSettings> templateRenderingSettings,
-        IValidator<EmailMessage> emailMessageValidator
-    )
+    public EmailRenderingService(IOptions<TemplateRenderingSettings> templateRenderingSettings, IValidator<EmailMessage> emailMessageValidator)
     {
         _templateRenderingSettings = templateRenderingSettings.Value;
         _emailMessageValidator = emailMessageValidator;
@@ -25,37 +22,45 @@ public class EmailRenderingService : IEmailRenderingService
 
     public ValueTask<string> RenderAsync(EmailMessage emailMessage, CancellationToken cancellationToken = default)
     {
-        var validationResult = _emailMessageValidator.Validate(emailMessage,
-            options => options.IncludeRuleSets(NotificationEvent.OnRendering.ToString()));
+        var validationResult = _emailMessageValidator.Validate(
+            emailMessage,
+            options => options.IncludeRuleSets(NotificationProcessingEvent.OnRendering.ToString())
+        );
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
 
-        var placeholderRegex = new Regex(_templateRenderingSettings.PlaceholderRegexPattern,
+        var placeholderRegex = new Regex(
+            _templateRenderingSettings.PlaceholderRegexPattern,
             RegexOptions.Compiled,
-            TimeSpan.FromSeconds(_templateRenderingSettings.RegexMatchTimeoutInSeconds));
+            TimeSpan.FromSeconds(_templateRenderingSettings.RegexMatchTimeoutInSeconds)
+        );
 
-        var placeholderValueRegex = new Regex(_templateRenderingSettings.PlaceholderValueRegexPattern,
+        var placeholderValueRegex = new Regex(
+            _templateRenderingSettings.PlaceholderValueRegexPattern,
             RegexOptions.Compiled,
-            TimeSpan.FromSeconds(_templateRenderingSettings.RegexMatchTimeoutInSeconds));
+            TimeSpan.FromSeconds(_templateRenderingSettings.RegexMatchTimeoutInSeconds)
+        );
 
         var matches = placeholderRegex.Matches(emailMessage.Template.Content);
 
         if (matches.Any() && !emailMessage.Variables.Any())
             throw new InvalidOperationException("Variables are required for this template.");
 
-        var templatePlaceholders = matches.Select(match =>
-            {
-                var placeholder = match.Value;
-                var placeholderValue = placeholderValueRegex.Match(placeholder).Groups[1].Value;
-                var valid = emailMessage.Variables.TryGetValue(placeholderValue, out var value);
-
-                return new TemplatePlaceholder
+        var templatePlaceholders = matches.Select(
+                match =>
                 {
-                    Placeholder = placeholder,
-                    PlaceholderValue = placeholderValue,
-                    Value = value,
-                    IsValid = valid
-                };
-            })
+                    var placeholder = match.Value;
+                    var placeholderValue = placeholderValueRegex.Match(placeholder).Groups[1].Value;
+                    var valid = emailMessage.Variables.TryGetValue(placeholderValue, out var value);
+
+                    return new TemplatePlaceholder
+                    {
+                        Placeholder = placeholder,
+                        PlaceholderValue = placeholderValue,
+                        Value = value,
+                        IsValid = valid
+                    };
+                }
+            )
             .ToList();
 
         ValidatePlaceholders(templatePlaceholders);
@@ -81,7 +86,6 @@ public class EmailRenderingService : IEmailRenderingService
         var errorMessage = new StringBuilder();
         missingPlaceholders.ForEach(placeholderValue => errorMessage.Append(placeholderValue).Append(','));
 
-        throw new InvalidOperationException(
-            $"Variable for given placeholders is not found - {string.Join(',', missingPlaceholders)}");
+        throw new InvalidOperationException($"Variable for given placeholders is not found - {string.Join(',', missingPlaceholders)}");
     }
 }

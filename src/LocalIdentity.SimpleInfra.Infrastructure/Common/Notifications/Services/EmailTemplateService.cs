@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using FluentValidation;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
 using LocalIdentity.SimpleInfra.Domain.Common.Query;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 using LocalIdentity.SimpleInfra.Domain.Enums;

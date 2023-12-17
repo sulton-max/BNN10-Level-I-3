@@ -1,6 +1,7 @@
-﻿using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
+﻿using LocalIdentity.SimpleInfra.Application.Common.EventBus.Brokers;
+using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Domain.Constants;
 using LocalIdentity.SimpleInfra.Domain.Entities;
@@ -11,7 +12,7 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 public class AccountAggregatorService(
     IUserService userService,
     IUserInfoVerificationCodeService userInfoVerificationCodeService,
-    IEmailOrchestrationService emailOrchestrationService
+    IEventBusBroker eventBusBroker
 ) : IAccountAggregatorService
 {
     public async ValueTask<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default)
@@ -21,40 +22,64 @@ public class AccountAggregatorService(
 
         // send welcome email
         var systemUser = await userService.GetSystemUserAsync(cancellationToken: cancellationToken);
-        await emailOrchestrationService.SendAsync(
-            new EmailNotificationRequest
+
+        var welcomeNotificationEvent = new ProcessNotificationEvent
+        {
+            SenderUserId = systemUser.Id,
+            ReceiverUserId = createdUser.Id,
+            TemplateType = NotificationTemplateType.WelcomeNotification,
+            Variables = new Dictionary<string, string>
             {
-                SenderUserId = systemUser.Id,
-                ReceiverUserId = createdUser.Id,
-                TemplateType = NotificationTemplateType.WelcomeNotification,
-                Variables = new Dictionary<string, string>
-                {
-                    { NotificationTemplateConstants.UserNamePlaceholder, createdUser.FirstName }
-                }
-            },
+                { NotificationTemplateConstants.UserNamePlaceholder, createdUser.FirstName }
+            }
+        };
+
+        // send verification email
+        await eventBusBroker.PublishAsync(
+            welcomeNotificationEvent,
+            EventBusConstants.NotificationExchangeName,
+            EventBusConstants.ProcessNotificationQueueName,
             cancellationToken
         );
 
-        // send verification email
         var verificationCode = await userInfoVerificationCodeService.CreateAsync(
             VerificationCodeType.EmailAddressVerification,
             createdUser.Id,
             cancellationToken
         );
 
-        await emailOrchestrationService.SendAsync(
-            new EmailNotificationRequest
+        // send verification email
+        var sendVerificationEvent = new EmailProcessNotificationEvent
+        {
+            SenderUserId = systemUser.Id,
+            ReceiverUserId = createdUser.Id,
+            TemplateType = NotificationTemplateType.EmailAddressVerificationNotification,
+            Variables = new Dictionary<string, string>
             {
-                SenderUserId = systemUser.Id,
-                ReceiverUserId = createdUser.Id,
-                TemplateType = NotificationTemplateType.EmailAddressVerificationNotification,
-                Variables = new Dictionary<string, string>
-                {
-                    { NotificationTemplateConstants.EmailAddressVerificationLinkPlaceholder, verificationCode.VerificationLink }
-                }
-            },
+                { NotificationTemplateConstants.EmailAddressVerificationLinkPlaceholder, verificationCode.VerificationLink }
+            }
+        };
+
+        await eventBusBroker.PublishAsync(
+            sendVerificationEvent,
+            EventBusConstants.NotificationExchangeName,
+            EventBusConstants.ProcessNotificationQueueName,
             cancellationToken
         );
+
+        // await emailOrchestrationService.SendAsync(
+        //     new EmailProcessNotificationEvent
+        //     {
+        //         SenderUserId = systemUser.Id,
+        //         ReceiverUserId = createdUser.Id,
+        //         TemplateType = NotificationTemplateType.EmailAddressVerificationNotification,
+        //         Variables = new Dictionary<string, string>
+        //         {
+        //             { NotificationTemplateConstants.EmailAddressVerificationLinkPlaceholder, verificationCode.VerificationLink }
+        //         }
+        //     },
+        //     cancellationToken
+        // );
 
         return true;
     }

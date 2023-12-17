@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Force.DeepCloner;
+using LocalIdentity.SimpleInfra.Application.Common.Serialization;
 using LocalIdentity.SimpleInfra.Domain.Common.Caching;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using LocalIdentity.SimpleInfra.Persistence.Caching.Brokers;
@@ -9,7 +10,11 @@ using Newtonsoft.Json;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Caching.Brokers;
 
-public class RedisDistributedCacheBroker(IOptions<CacheSettings> cacheSettings, IDistributedCache distributedCache) : ICacheBroker
+public class RedisDistributedCacheBroker(
+    IOptions<CacheSettings> cacheSettings,
+    IDistributedCache distributedCache,
+    IJsonSerializationSettingsProvider jsonSerializationSettingsProvider
+) : ICacheBroker
 {
     private readonly DistributedCacheEntryOptions _entryOptions = new()
     {
@@ -19,8 +24,8 @@ public class RedisDistributedCacheBroker(IOptions<CacheSettings> cacheSettings, 
 
     public async ValueTask<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
-        var value = await distributedCache.GetAsync(key);
-        return value is not null ? JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value)) : default;
+        var value = await distributedCache.GetAsync(key, cancellationToken);
+        return value is not null ? JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value), jsonSerializationSettingsProvider.Get()) : default;
     }
 
     public ValueTask<bool> TryGetAsync<T>(string key, out T? value, CancellationToken cancellationToken = default)
@@ -29,7 +34,7 @@ public class RedisDistributedCacheBroker(IOptions<CacheSettings> cacheSettings, 
 
         if (foundEntry is not null)
         {
-            value = JsonConvert.DeserializeObject<T>(foundEntry);
+            value = JsonConvert.DeserializeObject<T>(foundEntry, jsonSerializationSettingsProvider.Get());
             return ValueTask.FromResult(true);
         }
 
@@ -44,18 +49,23 @@ public class RedisDistributedCacheBroker(IOptions<CacheSettings> cacheSettings, 
         CancellationToken cancellationToken = default
     )
     {
-        var cachedValue = await distributedCache.GetStringAsync(key);
-        if (cachedValue is not null) return JsonConvert.DeserializeObject<T>(cachedValue);
+        var cachedValue = await distributedCache.GetStringAsync(key, token: cancellationToken);
+        if (cachedValue is not null) return JsonConvert.DeserializeObject<T>(cachedValue, jsonSerializationSettingsProvider.Get());
 
         var value = await valueFactory();
-        await SetAsync(key, await valueFactory(), entryOptions);
+        await SetAsync(key, await valueFactory(), entryOptions, cancellationToken);
 
         return value;
     }
 
     public async ValueTask SetAsync<T>(string key, T value, CacheEntryOptions? entryOptions = default, CancellationToken cancellationToken = default)
     {
-        await distributedCache.SetStringAsync(key, JsonConvert.SerializeObject(value), GetCacheEntryOptions(entryOptions));
+        await distributedCache.SetStringAsync(
+            key,
+            JsonConvert.SerializeObject(value, jsonSerializationSettingsProvider.Get()),
+            GetCacheEntryOptions(entryOptions),
+            token: cancellationToken
+        );
     }
 
     public ValueTask DeleteAsync(string key, CancellationToken cancellationToken = default)
@@ -75,10 +85,8 @@ public class RedisDistributedCacheBroker(IOptions<CacheSettings> cacheSettings, 
         currentEntryOptions.AbsoluteExpirationRelativeToNow = entryOptions.AbsoluteExpirationRelativeToNow.HasValue
             ? currentEntryOptions.AbsoluteExpirationRelativeToNow
             : null;
-        
-        currentEntryOptions.SlidingExpiration = entryOptions.SlidingExpiration.HasValue 
-            ? currentEntryOptions.SlidingExpiration 
-            : null;
+
+        currentEntryOptions.SlidingExpiration = entryOptions.SlidingExpiration.HasValue ? currentEntryOptions.SlidingExpiration : null;
 
         return currentEntryOptions;
     }

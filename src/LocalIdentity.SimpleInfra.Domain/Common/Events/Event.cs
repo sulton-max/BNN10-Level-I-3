@@ -8,5 +8,13 @@ public abstract class Event
 
     public uint RetryAttemptsCount { get; set; }
 
-    public string Type { get; set; } = default!;
+    /// <summary>
+    /// For serialization
+    /// </summary>
+    public abstract string EventTypeDiscriminator { get; }
+
+    /// <summary>
+    ///  For deserialization
+    /// </summary>
+    public abstract Type GetEventType(string eventTypeDiscriminator);
 }

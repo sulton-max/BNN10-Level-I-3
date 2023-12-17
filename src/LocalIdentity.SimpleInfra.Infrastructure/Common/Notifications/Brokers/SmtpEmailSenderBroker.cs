@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Brokers;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Brokers;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using Microsoft.Extensions.Options;
 
@@ -18,7 +18,7 @@ public class SmtpEmailSenderBroker : IEmailSenderBroker
 
     public ValueTask<bool> SendAsync(EmailMessage emailMessage, CancellationToken cancellationToken = default)
     {
-        var mail = new MailMessage(emailMessage.SendEmailAddress, emailMessage.ReceiverEmailAddress);
+        var mail = new MailMessage(emailMessage.SenderEmailAddress, emailMessage.ReceiverEmailAddress);
         mail.Subject = emailMessage.Subject;
         mail.Body = emailMessage.Body;
         mail.IsBodyHtml = true;

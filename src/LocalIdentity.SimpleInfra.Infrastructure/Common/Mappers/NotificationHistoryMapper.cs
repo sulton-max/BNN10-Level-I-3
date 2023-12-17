@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Mappers;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Mappers;
 
@@ -7,6 +8,6 @@ public class NotificationRequestMapper : Profile
 {
     public NotificationRequestMapper()
     {
-        CreateMap<NotificationRequest, EmailNotificationRequest>();
+        CreateMap<ProcessNotificationEvent, EmailProcessNotificationEvent>();
     }
 }

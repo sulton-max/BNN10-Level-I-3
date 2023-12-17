@@ -1,13 +1,18 @@
-﻿namespace LocalIdentity.SimpleInfra.Api.Configurations;
+﻿using FluentValidation;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
+
+namespace LocalIdentity.SimpleInfra.Api.Configurations;
 
 public static partial class HostConfiguration
 {
     public static ValueTask<WebApplicationBuilder> ConfigureAsync(this WebApplicationBuilder builder)
     {
         builder
+            .AddSerializers()
             .AddMappers()
             .AddValidators()
             .AddCaching()
+            .AddEventBus()
             .AddNotificationInfrastructure()
             .AddVerificationInfrastructure()
             .AddIdentityInfrastructure()
@@ -21,10 +26,7 @@ public static partial class HostConfiguration
     {
         await app.SeedDataAsync();
 
-        app
-            .UseIdentityInfrastructure()
-            .UseDevTools()
-            .UseExposers();
+        app.UseIdentityInfrastructure().UseDevTools().UseExposers();
 
         return app;
     }

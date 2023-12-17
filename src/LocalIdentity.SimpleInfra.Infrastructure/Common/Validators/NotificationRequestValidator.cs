@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
-using LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
+using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Validators;
 
-public class NotificationRequestValidator : AbstractValidator<NotificationRequest>
+public class NotificationRequestValidator : AbstractValidator<ProcessNotificationEvent>
 {
     public NotificationRequestValidator(IUserService userService)
     {
@@ -19,22 +19,26 @@ public class NotificationRequestValidator : AbstractValidator<NotificationReques
             .NotEqual(Guid.Empty)
             .NotNull()
             .When(request => templatesRequireSender.Contains(request.TemplateType))
-            .CustomAsync(async (senderUserId, context, cancellationToken) =>
-            {
-                var user = await userService.GetByIdAsync(senderUserId!.Value, true, cancellationToken);
+            .CustomAsync(
+                async (senderUserId, context, cancellationToken) =>
+                {
+                    var user = await userService.GetByIdAsync(senderUserId, true, cancellationToken);
 
-                if (user is null)
-                    context.AddFailure("Sender user not found");
-            });
+                    if (user is null)
+                        context.AddFailure("Sender user not found");
+                }
+            );
 
         RuleFor(request => request.ReceiverUserId)
             .NotEqual(Guid.Empty)
-            .CustomAsync(async (senderUserId, context, cancellationToken) =>
-            {
-                var user = await userService.GetByIdAsync(senderUserId, true, cancellationToken);
+            .CustomAsync(
+                async (senderUserId, context, cancellationToken) =>
+                {
+                    var user = await userService.GetByIdAsync(senderUserId, true, cancellationToken);
 
-                if (user is null)
-                    context.AddFailure("Sender user not found");
-            });
+                    if (user is null)
+                        context.AddFailure("Sender user not found");
+                }
+            );
     }
 }

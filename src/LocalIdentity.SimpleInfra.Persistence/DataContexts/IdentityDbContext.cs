@@ -7,9 +7,9 @@ public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : Db
 {
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<UserSettings> UserSettings => Set<UserSettings>();
+
     public DbSet<UserInfoVerificationCode> UserInfoVerificationCodes => Set<UserInfoVerificationCode>();
-    
-    public DbSet<UserSignInDetails> UserSignInDetails => Set<UserSignInDetails>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
