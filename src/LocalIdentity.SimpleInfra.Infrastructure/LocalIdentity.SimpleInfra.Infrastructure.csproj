@@ -17,7 +17,7 @@
         <PackageReference Include="FluentValidation" Version="11.8.1"/>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
         <PackageReference Include="LazyCache" Version="2.4.0"/>
-        <PackageReference Include="Twilio" Version="7.0.0-rc.1" />
+        <PackageReference Include="Twilio" Version="7.0.0-rc.1"/>
     </ItemGroup>
 
 </Project>

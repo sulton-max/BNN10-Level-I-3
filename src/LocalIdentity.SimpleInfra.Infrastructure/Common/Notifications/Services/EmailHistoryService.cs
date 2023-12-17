@@ -24,8 +24,10 @@ public class EmailHistoryService : IEmailHistoryService
         FilterPagination paginationOptions,
         bool asNoTracking = false,
         CancellationToken cancellationToken = default
-    ) =>
-        await _emailHistoryRepository.Get().ApplyPagination(paginationOptions).ToListAsync(cancellationToken);
+    )
+    {
+        return await _emailHistoryRepository.Get().ApplyPagination(paginationOptions).ToListAsync(cancellationToken);
+    }
 
     public async ValueTask<EmailHistory> CreateAsync(
         EmailHistory emailHistory,

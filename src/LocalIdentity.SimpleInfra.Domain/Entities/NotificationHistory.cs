@@ -5,8 +5,6 @@ namespace LocalIdentity.SimpleInfra.Domain.Entities;
 
 public abstract class NotificationHistory : IEntity
 {
-    public Guid Id { get; set; }
-
     public Guid TemplateId { get; set; }
 
     public Guid SenderUserId { get; set; }
@@ -20,6 +18,7 @@ public abstract class NotificationHistory : IEntity
     public bool IsSuccessful { get; set; }
 
     public string? ErrorMessage { get; set; }
-    
+
     public NotificationTemplate Template { get; set; }
+    public Guid Id { get; set; }
 }

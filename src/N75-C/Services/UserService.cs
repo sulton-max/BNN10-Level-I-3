@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using N75_C.DataContexts;
-using N75_C.Models;
 using N75_C.Models.Entities;
 
 namespace N75_C.Services;
@@ -16,13 +15,13 @@ public class UserService(IdentityDbContext identityDbContext)
 
         return await initialQuery.FirstOrDefaultAsync(cancellationToken);
     }
-    
+
     public async ValueTask<User> CreateAsync(User user, bool saveChanges = true, CancellationToken cancellationToken = default)
     {
         user.Id = Guid.Empty;
-        
+
         identityDbContext.Add(user);
-        
+
         if (saveChanges)
             await identityDbContext.SaveChangesAsync(cancellationToken);
 

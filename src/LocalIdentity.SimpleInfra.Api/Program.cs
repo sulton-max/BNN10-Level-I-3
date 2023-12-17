@@ -1,10 +1,4 @@
 using LocalIdentity.SimpleInfra.Api.Configurations;
-using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
-using LocalIdentity.SimpleInfra.Domain.Constants;
-using LocalIdentity.SimpleInfra.Domain.Entities;
-using LocalIdentity.SimpleInfra.Domain.Enums;
-using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 // var systemUser = new User
 // {

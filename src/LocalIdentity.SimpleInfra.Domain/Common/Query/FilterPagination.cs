@@ -1,17 +1,17 @@
 ﻿namespace LocalIdentity.SimpleInfra.Domain.Common.Query;
 
 /// <summary>
-/// Represents a class for filter pagination.
+///     Represents a class for filter pagination.
 /// </summary>
 public class FilterPagination
 {
     /// <summary>
-    /// Gets the size of the page ( limit of items in query result )
+    ///     Gets the size of the page ( limit of items in query result )
     /// </summary>
     public uint PageSize { get; init; }
 
     /// <summary>
-    /// Gets the page token ( identifier ) of query
+    ///     Gets the page token ( identifier ) of query
     /// </summary>
     public uint PageToken { get; init; }
 

@@ -7,11 +7,8 @@ namespace LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
 
 public interface INotificationAggregatorService
 {
-    ValueTask<FuncResult<bool>> SendAsync(
-        ProcessNotificationEvent processNotificationEvent,
-        CancellationToken cancellationToken = default
-    );
-    
+    ValueTask<FuncResult<bool>> SendAsync(ProcessNotificationEvent processNotificationEvent, CancellationToken cancellationToken = default);
+
     ValueTask<IList<NotificationTemplate>> GetTemplatesByFilterAsync(
         NotificationTemplateFilter filter,
         CancellationToken cancellationToken = default

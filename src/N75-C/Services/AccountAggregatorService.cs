@@ -1,5 +1,4 @@
-﻿using N75_C.Models;
-using N75_C.Models.Entities;
+﻿using N75_C.Models.Entities;
 
 namespace N75_C.Services;
 
@@ -12,11 +11,7 @@ public class AccountAggregatorService(UserService userService, EmailSenderServic
         var createdUser = await userService.CreateAsync(user, true, cancellationToken);
 
         // queue welcome notification
-        await emailSenderService.QueueAsync(user.Id,
-            user.EmailAddress,
-            "Welcome",
-            "Welcome John",
-            cancellationToken: cancellationToken);
+        await emailSenderService.QueueAsync(user.Id, user.EmailAddress, "Welcome", "Welcome John", cancellationToken: cancellationToken);
 
         // queue verification notification
         return createdUser;

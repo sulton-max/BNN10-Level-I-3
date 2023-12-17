@@ -38,8 +38,7 @@ public class UserInfoVerificationCodeService(
 
     public async ValueTask<VerificationType?> GetVerificationTypeAsync(string code, CancellationToken cancellationToken = default)
     {
-        var verificationCode = await userInfoVerificationCodeRepository
-            .Get(verificationCode => verificationCode.Code == code, true)
+        var verificationCode = await userInfoVerificationCodeRepository.Get(verificationCode => verificationCode.Code == code, true)
             .Select(
                 verificationCode => new
                 {
@@ -64,7 +63,7 @@ public class UserInfoVerificationCodeService(
         {
             var verificationCodes = Generate();
             var existingCodes = await userInfoVerificationCodeRepository.Get(code => verificationCodes.Contains(code.Code))
-                .ToListAsync(cancellationToken: cancellationToken);
+                .ToListAsync(cancellationToken);
 
             verificationCodeValue = verificationCodes.Except(existingCodes.Select(code => code.Code)).FirstOrDefault() ??
                                     throw new InvalidOperationException("Verification code generation failed.");

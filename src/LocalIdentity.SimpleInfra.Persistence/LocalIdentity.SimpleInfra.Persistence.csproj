@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LocalIdentity.SimpleInfra.Domain\LocalIdentity.SimpleInfra.Domain.csproj" />
+        <ProjectReference Include="..\LocalIdentity.SimpleInfra.Domain\LocalIdentity.SimpleInfra.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -20,7 +20,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0"/>
     </ItemGroup>
 
 </Project>

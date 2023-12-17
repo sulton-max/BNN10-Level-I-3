@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 namespace LocalIdentity.SimpleInfra.Persistence.Extensions;
 
 /// <summary>
-/// Extension methods for LINQ operations.
+///     Extension methods for LINQ operations.
 /// </summary>
 public static class LinqExtensions
 {
     /// <summary>
-    /// Applies the query specification to queryable source
+    ///     Applies the query specification to queryable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the queryable source.</typeparam>
     /// <param name="source">Queryable source to apply specifications to.</param>
@@ -28,7 +28,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies the query specification to enumerable source
+    ///     Applies the query specification to enumerable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the enumerable source.</typeparam>
     /// <param name="source">Enumerable source to apply specifications to.</param>
@@ -43,7 +43,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies the predicates to queryable source
+    ///     Applies the predicates to queryable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the queryable source.</typeparam>
     /// <param name="source">Queryable source to apply specifications to.</param>
@@ -58,7 +58,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies the predicates to enumerable source
+    ///     Applies the predicates to enumerable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the enumerable source.</typeparam>
     /// <param name="source">Enumerable source to apply specifications to.</param>
@@ -73,7 +73,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies the joining to queryable source
+    ///     Applies the joining to queryable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the queryable source.</typeparam>
     /// <param name="source">Queryable source to apply specifications to.</param>
@@ -88,7 +88,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies ordering to queryable source
+    ///     Applies ordering to queryable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the queryable source.</typeparam>
     /// <param name="source">Queryable source to apply specifications to.</param>
@@ -110,7 +110,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies ordering to enumerable source
+    ///     Applies ordering to enumerable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the enumerable source.</typeparam>
     /// <param name="source">Enumerable source to apply specifications to.</param>
@@ -132,7 +132,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies pagination to queryable source
+    ///     Applies pagination to queryable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the queryable source.</typeparam>
     /// <param name="source">Queryable source to apply specifications to.</param>
@@ -146,7 +146,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies pagination to queryable source
+    ///     Applies pagination to queryable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the queryable source.</typeparam>
     /// <param name="source">Queryable source to apply specifications to.</param>
@@ -159,7 +159,7 @@ public static class LinqExtensions
     }
 
     /// <summary>
-    /// Applies pagination to enumerable source
+    ///     Applies pagination to enumerable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the enumerable source.</typeparam>
     /// <param name="source">Enumerable source to apply specifications to.</param>
@@ -174,7 +174,7 @@ public static class LinqExtensions
 
 
     /// <summary>
-    /// Applies pagination to enumerable source
+    ///     Applies pagination to enumerable source
     /// </summary>
     /// <typeparam name="TSource">The type of elements in the enumerable source.</typeparam>
     /// <param name="source">Queryable source to apply specifications to.</param>

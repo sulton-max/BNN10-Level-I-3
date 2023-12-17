@@ -5,5 +5,8 @@ namespace LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 
 public class EmailProcessNotificationEvent : ProcessNotificationEvent
 {
-    public EmailProcessNotificationEvent() => Type = NotificationType.Email;
+    public EmailProcessNotificationEvent()
+    {
+        Type = NotificationType.Email;
+    }
 }

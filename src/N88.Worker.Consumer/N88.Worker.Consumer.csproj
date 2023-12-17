@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
         <PackageReference Include="RabbitMQ.Client" Version="7.0.0-alpha.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\N88.Common\N88.Common.csproj" />
+        <ProjectReference Include="..\N88.Common\N88.Common.csproj"/>
     </ItemGroup>
 
 </Project>

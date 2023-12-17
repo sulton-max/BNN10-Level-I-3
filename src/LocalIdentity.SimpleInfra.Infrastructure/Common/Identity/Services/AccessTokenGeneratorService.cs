@@ -48,23 +48,23 @@ public class AccessTokenGeneratorService(IOptions<JwtSettings> jwtSettings) : IA
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         return new JwtSecurityToken(
-            issuer: _jwtSettings.ValidIssuer,
-            audience: _jwtSettings.ValidAudience,
-            claims: claims,
-            notBefore: DateTime.UtcNow,
-            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationTimeInMinutes),
-            signingCredentials: credentials
+            _jwtSettings.ValidIssuer,
+            _jwtSettings.ValidAudience,
+            claims,
+            DateTime.UtcNow,
+            DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationTimeInMinutes),
+            credentials
         );
     }
 
     private List<Claim> GetClaims(User user, AccessToken accessToken)
     {
-        return new List<Claim>()
+        return new List<Claim>
         {
             new(ClaimTypes.Email, user.EmailAddress),
             new(ClaimTypes.Role, user.Role.ToString()),
             new(ClaimConstants.UserId, user.Id.ToString()),
-            new(ClaimConstants.AccessTokenId, accessToken.Id.ToString()),
+            new(ClaimConstants.AccessTokenId, accessToken.Id.ToString())
         };
     }
 }

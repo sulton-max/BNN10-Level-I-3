@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using System.Text;
-using System.Text.Json;
 using Newtonsoft.Json;
 using JsonException = System.Text.Json.JsonException;
 
@@ -11,7 +9,7 @@ public static class JsonExtensions
     public static IList<JsonConverter> GetJsonConverters(this Type type)
     {
         var attribute = type.GetCustomAttribute<JsonConverterAttribute>();
-        return attribute is null ? [] : [(JsonConverter)Activator.CreateInstance(((JsonConverterAttribute)attribute).ConverterType)!];
+        return attribute is null ? [] : [(JsonConverter)Activator.CreateInstance(attribute.ConverterType)!];
     }
 
     // public static ReadOnlySpan<byte> GetValue(this ref Utf8JsonReader reader, ReadOnlySpan<byte> keyValue)
@@ -41,7 +39,8 @@ public static class JsonExtensions
 
         while (reader.Read())
         {
-            if (reader.TokenType != JsonToken.PropertyName || !reader.Value!.ToString()!.Equals(keyToMatch, StringComparison.OrdinalIgnoreCase)) continue;
+            if (reader.TokenType != JsonToken.PropertyName ||
+                !reader.Value!.ToString()!.Equals(keyToMatch, StringComparison.OrdinalIgnoreCase)) continue;
 
             reader.Read();
             return (string)reader.Value!;
@@ -56,6 +55,6 @@ public static class JsonExtensions
         //     throw new JsonException($"Expected a string value for property {keyToMatch.ToString()}, but found {reader.TokenType}.");
         // }
 
-        throw new JsonException($"Could not find property {keyToMatch.ToString()} in JSON.");
+        throw new JsonException($"Could not find property {keyToMatch} in JSON.");
     }
 }

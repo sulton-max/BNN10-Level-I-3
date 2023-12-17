@@ -5,8 +5,7 @@
 
 //Get local now and utc now
 
-using System.Threading.Channels;
-using time_abstraction;
+
 
 // var localNow = TimeProvider.System.GetLocalNow();
 // var utcNow = TimeProvider.System.GetUtcNow();
@@ -24,11 +23,11 @@ var timer = TimeProvider.System.CreateTimer(
 
         Console.WriteLine("test");
     },
-    state: null,
-    dueTime: TimeSpan.FromSeconds(2),
+    null,
+    TimeSpan.FromSeconds(2),
     // dueTime: TimeSpan.Zero - bu timerni hoziroq boshlaydi
     // dueTime: TimeSpan.FromSeconds(Timeout.InfiniteTimeSpan.TotalSeconds), - bu timerni shunchaki e'lon qilib qo'yadi
-    period: TimeSpan.FromSeconds(5)
+    TimeSpan.FromSeconds(5)
 );
 
 // do something

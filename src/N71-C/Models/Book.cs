@@ -9,7 +9,7 @@ public class Book
     public string Genre { get; set; } = string.Empty;
 
     public int Pages { get; set; }
-    
+
     public Guid AuthorId { get; set; }
 
     public ICollection<Review> Reviews { get; set; } = new List<Review>();

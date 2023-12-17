@@ -7,7 +7,7 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Serializers;
 
 public class JsonSerializationSettingsProvider : IJsonSerializationSettingsProvider
 {
-    private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
+    private readonly JsonSerializerSettings _jsonSerializerSettings = new()
     {
         Formatting = Formatting.Indented,
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -15,5 +15,8 @@ public class JsonSerializationSettingsProvider : IJsonSerializationSettingsProvi
         NullValueHandling = NullValueHandling.Ignore
     };
 
-    public JsonSerializerSettings Get(bool clone = false) => clone ? _jsonSerializerSettings.DeepClone() : _jsonSerializerSettings;
+    public JsonSerializerSettings Get(bool clone = false)
+    {
+        return clone ? _jsonSerializerSettings.DeepClone() : _jsonSerializerSettings;
+    }
 }

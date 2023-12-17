@@ -32,9 +32,7 @@ public class SignUpDetailsValidator : AbstractValidator<SignUpDetails>
             .Matches(validationSettingsValue.NameRegexPattern)
             .WithMessage("Last name is not valid");
 
-        RuleFor(signUpDetails => signUpDetails.Age)
-            .GreaterThanOrEqualTo(18)
-            .LessThanOrEqualTo(130);
+        RuleFor(signUpDetails => signUpDetails.Age).GreaterThanOrEqualTo(18).LessThanOrEqualTo(130);
 
         RuleFor(signUpDetails => signUpDetails.Password)
             .NotNull()

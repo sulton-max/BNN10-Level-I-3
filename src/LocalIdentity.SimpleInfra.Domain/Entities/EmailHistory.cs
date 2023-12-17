@@ -15,7 +15,7 @@ public class EmailHistory : NotificationHistory
     public string ReceiverEmailAddress { get; set; } = default!;
 
     public string Subject { get; set; } = default!;
-    
+
     [NotMapped]
     public EmailTemplate EmailTemplate
     {

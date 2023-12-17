@@ -14,10 +14,9 @@ public class EmailTemplateValidator : AbstractValidator<EmailTemplate>
             .MinimumLength(10)
             // .WithMessage("Sms template content must be at least 10 characters long")
             .MaximumLength(256);
-            // .WithMessage("Sms template content must be at most 256 characters long");
+        // .WithMessage("Sms template content must be at most 256 characters long");
 
-        RuleFor(template => template.Type)
-            .Equal(NotificationType.Email);
-            // .WithMessage("Sms template notification type must be Sms");
+        RuleFor(template => template.Type).Equal(NotificationType.Email);
+        // .WithMessage("Sms template notification type must be Sms");
     }
 }

@@ -14,10 +14,10 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Services;
 public abstract class EventSubscriber<TEvent> : IEventSubscriber where TEvent : Event
 {
     private readonly EventBusSubscriberSettings _eventBusSubscriberSettings;
-    private IEnumerable<EventingBasicConsumer> _consumers = default!;
+    private readonly JsonSerializerSettings _jsonSerializerSettings;
     private readonly IEnumerable<string> _queueNames;
     private readonly IRabbitMqConnectionProvider _rabbitMqConnectionProvider;
-    private readonly JsonSerializerSettings _jsonSerializerSettings;
+    private IEnumerable<EventingBasicConsumer> _consumers = default!;
     protected IChannel Channel = default!;
 
     public EventSubscriber(

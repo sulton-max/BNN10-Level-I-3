@@ -2,9 +2,6 @@
 
 public class CacheEntryOptions
 {
-    public TimeSpan? AbsoluteExpirationRelativeToNow { get; init; }
-    public TimeSpan? SlidingExpiration { get; init; }
-
     public CacheEntryOptions()
     {
     }
@@ -14,4 +11,7 @@ public class CacheEntryOptions
         AbsoluteExpirationRelativeToNow = absoluteExpirationRelativeToNow;
         SlidingExpiration = slidingExpiration;
     }
+
+    public TimeSpan? AbsoluteExpirationRelativeToNow { get; init; }
+    public TimeSpan? SlidingExpiration { get; init; }
 }

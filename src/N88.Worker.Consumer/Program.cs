@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Text.Json;
 using N88.Common;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -17,7 +16,7 @@ var connection = await connectionFactory.CreateConnectionAsync();
 // create channel
 var channel = await connection.CreateChannelAsync();
 
-await channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false);
+await channel.BasicQosAsync(0, 1, false);
 
 // create consumer
 var consumerA = new EventingBasicConsumer(channel);
@@ -37,9 +36,9 @@ consumerA.Received += async (sender, eventArgs) =>
     Console.WriteLine($"Feed generated for user by Id : {identityEvent.UserId}");
 
     // acknowledge message
-    await channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
+    await channel.BasicAckAsync(eventArgs.DeliveryTag, false);
 };
 
-channel.BasicConsume(queue: MessagingConstants.IdentityQueue, autoAck: false, consumer: consumerA);
+channel.BasicConsume(MessagingConstants.IdentityQueue, false, consumerA);
 
 Console.ReadLine();

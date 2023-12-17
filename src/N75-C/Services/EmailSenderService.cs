@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -16,13 +15,10 @@ public class EmailSenderService(
     IdentityDbContext identityDbContext
 )
 {
-    private readonly SmtpEmailSenderSettings _smtpEmailSenderSettings = smtpEmailSenderSettings.Value;
     private readonly NotificationSenderSettings _notificationSenderSettings = notificationSenderSettings.Value;
+    private readonly SmtpEmailSenderSettings _smtpEmailSenderSettings = smtpEmailSenderSettings.Value;
 
-    public async ValueTask<bool> UpdateEventAsync(
-        NotificationEvent notificationEvent,
-        CancellationToken cancellationToken = default
-    )
+    public async ValueTask<bool> UpdateEventAsync(NotificationEvent notificationEvent, CancellationToken cancellationToken = default)
     {
         identityDbContext.Update(notificationEvent);
         return await identityDbContext.SaveChangesAsync(cancellationToken) > 0;
@@ -33,13 +29,15 @@ public class EmailSenderService(
         var failedNotificationEvents = new List<NotificationEvent>();
 
         // query failed email events
-        failedNotificationEvents.AddRange(await identityDbContext.EmailNotificationEvents
-            .Where(emailNotificationEvent => !emailNotificationEvent.IsCancelled &&
-                                             !emailNotificationEvent.IsSuccessful &&
-                                             emailNotificationEvent.ResentAttempts <=
-                                             _notificationSenderSettings.ResendAttemptsThreshold)
-            .OrderBy(emailNotificationEvent => emailNotificationEvent.CreatedAt)
-            .ToListAsync());
+        failedNotificationEvents.AddRange(
+            await identityDbContext.EmailNotificationEvents
+                .Where(
+                    emailNotificationEvent => !emailNotificationEvent.IsCancelled && !emailNotificationEvent.IsSuccessful &&
+                                              emailNotificationEvent.ResentAttempts <= _notificationSenderSettings.ResendAttemptsThreshold
+                )
+                .OrderBy(emailNotificationEvent => emailNotificationEvent.CreatedAt)
+                .ToListAsync()
+        );
 
         // query failed sms events
 
@@ -69,12 +67,7 @@ public class EmailSenderService(
         return !saveChanges || await identityDbContext.SaveChangesAsync(cancellationToken) > 0;
     }
 
-    public ValueTask<bool> SendAsync(
-        string emailAddress,
-        string subject,
-        string body,
-        CancellationToken cancellationToken = default
-    )
+    public ValueTask<bool> SendAsync(string emailAddress, string subject, string body, CancellationToken cancellationToken = default)
     {
         var mail = new MailMessage(_smtpEmailSenderSettings.CredentialAddress, emailAddress);
         mail.Subject = subject;
@@ -82,8 +75,7 @@ public class EmailSenderService(
         mail.IsBodyHtml = true;
 
         var smtpClient = new SmtpClient(_smtpEmailSenderSettings.Host, _smtpEmailSenderSettings.Port);
-        smtpClient.Credentials =
-            new NetworkCredential(_smtpEmailSenderSettings.CredentialAddress, _smtpEmailSenderSettings.Password);
+        smtpClient.Credentials = new NetworkCredential(_smtpEmailSenderSettings.CredentialAddress, _smtpEmailSenderSettings.Password);
         smtpClient.EnableSsl = true;
 
         smtpClient.Send(mail);

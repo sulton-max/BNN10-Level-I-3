@@ -18,14 +18,6 @@ public class PasswordGeneratorService(
     private readonly PasswordValidationSettings _passwordValidationSettings = passwordValidationSettings.Value;
     private readonly Random _random = new();
 
-    private enum PasswordElementType
-    {
-        Digit = 0,
-        Uppercase = 1,
-        Lowercase = 2,
-        NonAlphanumeric = 3
-    }
-
     public string GeneratePassword()
     {
         var password = new StringBuilder();
@@ -43,10 +35,12 @@ public class PasswordGeneratorService(
 
     public string GetValidatedPassword(string password, User user)
     {
-        var validationContext = new ValidationContext<CredentialDetails>(new CredentialDetails
-        {
-            Password = password
-        })
+        var validationContext = new ValidationContext<CredentialDetails>(
+            new CredentialDetails
+            {
+                Password = password
+            }
+        )
         {
             RootContextData =
             {
@@ -90,5 +84,13 @@ public class PasswordGeneratorService(
             PasswordElementType.NonAlphanumeric => CharExtensions.GetRandomNonAlphanumeric(_random),
             _ => throw new ArgumentOutOfRangeException(nameof(passwordElementType), passwordElementType, null)
         };
+    }
+
+    private enum PasswordElementType
+    {
+        Digit = 0,
+        Uppercase = 1,
+        Lowercase = 2,
+        NonAlphanumeric = 3
     }
 }

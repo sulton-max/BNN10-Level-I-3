@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Text.Json;
 using N88.Common;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -17,7 +16,7 @@ var connection = await connectionFactory.CreateConnectionAsync();
 // create channel
 var channel = await connection.CreateChannelAsync();
 
-await channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false);
+await channel.BasicQosAsync(0, 1, false);
 
 // create consumer
 var verificationProcessingSubscriber = new EventingBasicConsumer(channel);
@@ -35,7 +34,7 @@ verificationProcessingSubscriber.Received += async (sender, eventArgs) =>
     Console.WriteLine($"Verification message sent to user by Id : {identityEvent.UserId}");
 
     // acknowledge message
-    await channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
+    await channel.BasicAckAsync(eventArgs.DeliveryTag, false);
 };
 
 // handle received message
@@ -49,7 +48,7 @@ resumeGenerationSubscriber.Received += async (sender, eventArgs) =>
     Console.WriteLine($"Resume generated for user Id: {identityEvent.UserId}");
 
     // acknowledge message
-    await channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
+    await channel.BasicAckAsync(eventArgs.DeliveryTag, false);
 };
 
 // handle received message
@@ -63,11 +62,11 @@ feedGenerationSubscriber.Received += async (sender, eventArgs) =>
     Console.WriteLine($"Feed generated for user Id: {identityEvent.UserId}");
 
     // acknowledge message
-    await channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
+    await channel.BasicAckAsync(eventArgs.DeliveryTag, false);
 };
 
-channel.BasicConsume(queue: MessagingConstants.VerificationProcessingQueue, autoAck: false, consumer: verificationProcessingSubscriber);
-channel.BasicConsume(queue: MessagingConstants.ResumeGenerationQueue, autoAck: false, consumer: resumeGenerationSubscriber);
-channel.BasicConsume(queue: MessagingConstants.FeedGenerationQueue, autoAck: false, consumer: feedGenerationSubscriber);
+channel.BasicConsume(MessagingConstants.VerificationProcessingQueue, false, verificationProcessingSubscriber);
+channel.BasicConsume(MessagingConstants.ResumeGenerationQueue, false, resumeGenerationSubscriber);
+channel.BasicConsume(MessagingConstants.FeedGenerationQueue, false, feedGenerationSubscriber);
 
 Console.ReadLine();

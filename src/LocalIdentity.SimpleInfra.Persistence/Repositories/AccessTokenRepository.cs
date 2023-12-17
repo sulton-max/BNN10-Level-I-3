@@ -2,7 +2,6 @@
 using LocalIdentity.SimpleInfra.Domain.Entities;
 using LocalIdentity.SimpleInfra.Persistence.Caching.Brokers;
 using LocalIdentity.SimpleInfra.Persistence.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace LocalIdentity.SimpleInfra.Persistence.Repositories;
 
@@ -12,13 +11,13 @@ public class AccessTokenRepository(ICacheBroker cacheBroker) : IAccessTokenRepos
     {
         var cacheEntryOptions = new CacheEntryOptions(accessToken.ExpiryTime - DateTimeOffset.UtcNow, null);
         await cacheBroker.SetAsync(accessToken.Id.ToString(), accessToken, cacheEntryOptions, cancellationToken);
-        
+
         return accessToken;
     }
 
     public ValueTask<AccessToken?> GetByIdAsync(Guid accessTokenId, CancellationToken cancellationToken = default)
     {
-        return cacheBroker.GetAsync<AccessToken>(accessTokenId.ToString(), cancellationToken: cancellationToken);
+        return cacheBroker.GetAsync<AccessToken>(accessTokenId.ToString(), cancellationToken);
     }
 
     public async ValueTask<AccessToken> UpdateAsync(AccessToken accessToken, CancellationToken cancellationToken = default)

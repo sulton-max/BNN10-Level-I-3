@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using LocalIdentity.SimpleInfra.Application.Common.Identity.Models;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
@@ -48,10 +47,8 @@ public class AccessTokenValidator : AbstractValidator<AccessToken>
                         {
                             if (context.RootContextData.TryGetValue(nameof(AccessToken), out var userInfoObj) &&
                                 userInfoObj is AccessToken foundAccessToken)
-                            {
                                 if (accessToken.UserId != foundAccessToken.UserId)
                                     context.AddFailure(nameof(AccessToken.UserId), $"{nameof(AccessToken.UserId)} cannot be changed.");
-                            }
                         }
                     );
 

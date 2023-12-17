@@ -11,9 +11,5 @@ public interface IEmailHistoryService
         CancellationToken cancellationToken = default
     );
 
-    ValueTask<EmailHistory> CreateAsync(
-        EmailHistory emailHistory,
-        bool saveChanges = true,
-        CancellationToken cancellationToken = default
-    );
+    ValueTask<EmailHistory> CreateAsync(EmailHistory emailHistory, bool saveChanges = true, CancellationToken cancellationToken = default);
 }

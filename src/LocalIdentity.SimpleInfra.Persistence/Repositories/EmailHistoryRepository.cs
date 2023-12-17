@@ -10,8 +10,10 @@ namespace LocalIdentity.SimpleInfra.Persistence.Repositories;
 public class EmailHistoryRepository(NotificationDbContext dbContext, ICacheBroker cacheBroker)
     : EntityRepositoryBase<EmailHistory, NotificationDbContext>(dbContext, cacheBroker), IEmailHistoryRepository
 {
-    public new IQueryable<EmailHistory> Get(Expression<Func<EmailHistory, bool>>? predicate = default, bool asNoTracking = false) =>
-        base.Get(predicate, asNoTracking);
+    public new IQueryable<EmailHistory> Get(Expression<Func<EmailHistory, bool>>? predicate = default, bool asNoTracking = false)
+    {
+        return base.Get(predicate, asNoTracking);
+    }
 
     public new async ValueTask<EmailHistory> CreateAsync(
         EmailHistory emailHistory,

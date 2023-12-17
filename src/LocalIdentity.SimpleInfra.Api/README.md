@@ -35,18 +35,18 @@
 1. create empty web API project
 2. create all projects for clean architecture
 3. install dependencies
-   * In **Persistence** project
-       * `Microsoft.EntityFrameworkCore.Design`
-       * `Microsoft.EntityFrameworkCore.Tools`
-       * `Npgsql.EntityFrameworkCore.PostgreSQL`
-       * `Microsoft.AspNetCore.Authentication.JwtBearer`
-   * In **Application** project
-       * `Microsoft.AspNetCore.Authentication.JwtBearer`
-   * In **Infrastructure**
-       * `BCrypt.Net-Next`
-       * `Newtonsoft.Json`
-   * In **API** project
-       * `Microsoft.EntityFrameworkCore.Design`
+    * In **Persistence** project
+        * `Microsoft.EntityFrameworkCore.Design`
+        * `Microsoft.EntityFrameworkCore.Tools`
+        * `Npgsql.EntityFrameworkCore.PostgreSQL`
+        * `Microsoft.AspNetCore.Authentication.JwtBearer`
+    * In **Application** project
+        * `Microsoft.AspNetCore.Authentication.JwtBearer`
+    * In **Infrastructure**
+        * `BCrypt.Net-Next`
+        * `Newtonsoft.Json`
+    * In **API** project
+        * `Microsoft.EntityFrameworkCore.Design`
 4. create all common entity models in **Domain** project
 5. create **DbContext** and entity repository base in **Persistence** project
 
@@ -75,7 +75,7 @@
 
 1. create **SignInDetails** model with sign up information
 2. create **TokenGeneratorService**
-3.  inject **PasswordHasherService** into **AuthAggregationService**
+3. inject **PasswordHasherService** into **AuthAggregationService**
 4. create **SignInAsync** method that does next
     * look up for user if not found - throws exception
     * if found, validates password

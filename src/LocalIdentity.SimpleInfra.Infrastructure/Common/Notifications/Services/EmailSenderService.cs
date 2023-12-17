@@ -9,8 +9,8 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Services
 
 public class EmailSenderService : IEmailSenderService
 {
-    private readonly IEnumerable<IEmailSenderBroker> _emailSenderBrokers;
     private readonly IValidator<EmailMessage> _emailMessageValidator;
+    private readonly IEnumerable<IEmailSenderBroker> _emailSenderBrokers;
 
     public EmailSenderService(IEnumerable<IEmailSenderBroker> emailSenderBrokers, IValidator<EmailMessage> emailMessageValidator)
     {

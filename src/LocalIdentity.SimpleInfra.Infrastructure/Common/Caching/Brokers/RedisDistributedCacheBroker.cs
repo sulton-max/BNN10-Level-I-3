@@ -25,7 +25,9 @@ public class RedisDistributedCacheBroker(
     public async ValueTask<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
         var value = await distributedCache.GetAsync(key, cancellationToken);
-        return value is not null ? JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value), jsonSerializationSettingsProvider.Get()) : default;
+        return value is not null
+            ? JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value), jsonSerializationSettingsProvider.Get())
+            : default;
     }
 
     public ValueTask<bool> TryGetAsync<T>(string key, out T? value, CancellationToken cancellationToken = default)
@@ -49,7 +51,7 @@ public class RedisDistributedCacheBroker(
         CancellationToken cancellationToken = default
     )
     {
-        var cachedValue = await distributedCache.GetStringAsync(key, token: cancellationToken);
+        var cachedValue = await distributedCache.GetStringAsync(key, cancellationToken);
         if (cachedValue is not null) return JsonConvert.DeserializeObject<T>(cachedValue, jsonSerializationSettingsProvider.Get());
 
         var value = await valueFactory();
@@ -64,7 +66,7 @@ public class RedisDistributedCacheBroker(
             key,
             JsonConvert.SerializeObject(value, jsonSerializationSettingsProvider.Get()),
             GetCacheEntryOptions(entryOptions),
-            token: cancellationToken
+            cancellationToken
         );
     }
 

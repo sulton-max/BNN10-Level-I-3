@@ -11,19 +11,13 @@ public class StringExample
     public void ConcatenationWithString()
     {
         var result = string.Empty;
-        foreach (var i in Enumerable.Range(0, 1000))
-        {
-            result += ExampleText;
-        }
+        foreach (var i in Enumerable.Range(0, 1000)) result += ExampleText;
     }
 
     [Benchmark]
     public void ConcatenationWithStringBuilder()
     {
         var result = new StringBuilder();
-        foreach (var i in Enumerable.Range(0, 1000))
-        {
-            result.Append(ExampleText);
-        }
+        foreach (var i in Enumerable.Range(0, 1000)) result.Append(ExampleText);
     }
 }

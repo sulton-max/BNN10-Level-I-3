@@ -5,5 +5,5 @@ public enum NotificationTemplateType
     WelcomeNotification = 0,
     EmailAddressVerificationNotification = 1,
     PhoneNumberVerificationNotification = 2,
-    ReferralNotification = 3,
+    ReferralNotification = 3
 }

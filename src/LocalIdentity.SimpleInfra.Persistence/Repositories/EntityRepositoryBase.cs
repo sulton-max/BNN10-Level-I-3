@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LocalIdentity.SimpleInfra.Persistence.Repositories;
 
 /// <summary>
-/// Provides base functionality for entity repositories
+///     Provides base functionality for entity repositories
 /// </summary>
 /// <typeparam name="TEntity">Type of entity</typeparam>
 /// <typeparam name="TContext">Type of context</typeparam>
@@ -33,7 +33,7 @@ public class EntityRepositoryBase<TEntity, TContext>(TContext dbContext, ICacheB
 
 
     /// <summary>
-    /// Retrieves a list of entities based on query specification.
+    ///     Retrieves a list of entities based on query specification.
     /// </summary>
     /// <param name="querySpecification">The query specification to apply.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
@@ -53,11 +53,13 @@ public class EntityRepositoryBase<TEntity, TContext>(TContext dbContext, ICacheB
             if (cacheEntryOptions is not null) await cacheBroker.SetAsync(cacheKey, foundEntities, cacheEntryOptions, cancellationToken);
         }
         else if (cachedEntities is not null)
+        {
             foundEntities = cachedEntities;
+        }
 
         return foundEntities;
     }
-    
+
     protected async ValueTask<TEntity?> GetByIdAsync(Guid id, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var initialQuery = DbContext.Set<TEntity>().Where(entity => true);
@@ -65,7 +67,7 @@ public class EntityRepositoryBase<TEntity, TContext>(TContext dbContext, ICacheB
         if (asNoTracking)
             initialQuery = initialQuery.AsNoTracking();
 
-        return await initialQuery.SingleOrDefaultAsync(entity => entity.Id == id, cancellationToken: cancellationToken);
+        return await initialQuery.SingleOrDefaultAsync(entity => entity.Id == id, cancellationToken);
     }
 
     protected async ValueTask<TEntity> CreateAsync(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default)

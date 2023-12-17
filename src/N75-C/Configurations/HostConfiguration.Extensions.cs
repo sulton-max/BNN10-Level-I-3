@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using N75_C.DataContexts;
 using N75_C.Models.Settings;
@@ -11,31 +10,33 @@ public static partial class HostConfiguration
 {
     private static WebApplicationBuilder AddNotificationsInfrastructure(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<SmtpEmailSenderSettings>(
-            builder.Configuration.GetSection(nameof(SmtpEmailSenderSettings)));
+        builder.Services.Configure<SmtpEmailSenderSettings>(builder.Configuration.GetSection(nameof(SmtpEmailSenderSettings)));
 
-        builder.Services.Configure<NotificationSenderSettings>(
-            builder.Configuration.GetSection(nameof(NotificationSenderSettings)));
+        builder.Services.Configure<NotificationSenderSettings>(builder.Configuration.GetSection(nameof(NotificationSenderSettings)));
 
         builder.Services.AddScoped<EmailSenderService>();
 
         // registering hosted services
-        builder.Services.AddHostedService<EmailSenderBackgroundService>(provider =>
-        {
-            var scopedService = provider.CreateScope();
+        builder.Services.AddHostedService<EmailSenderBackgroundService>(
+            provider =>
+            {
+                var scopedService = provider.CreateScope();
 
-            return new EmailSenderBackgroundService(
-                scopedService.ServiceProvider.GetRequiredService<IOptions<NotificationSenderSettings>>(),
-                scopedService.ServiceProvider.GetRequiredService<EmailSenderService>());
-        });
+                return new EmailSenderBackgroundService(
+                    scopedService.ServiceProvider.GetRequiredService<IOptions<NotificationSenderSettings>>(),
+                    scopedService.ServiceProvider.GetRequiredService<EmailSenderService>()
+                );
+            }
+        );
 
         return builder;
     }
 
     private static WebApplicationBuilder AddIdentityInfrastructure(this WebApplicationBuilder builder)
     {
-        builder.Services.AddDbContext<IdentityDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection")));
+        builder.Services.AddDbContext<IdentityDbContext>(
+            options => options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnection"))
+        );
 
         builder.Services.AddScoped<UserService>().AddScoped<AccountAggregatorService>();
 

@@ -5,8 +5,5 @@ namespace LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
 
 public interface IEmailOrchestrationService
 {
-    ValueTask<FuncResult<bool>> SendAsync(
-        EmailProcessNotificationEvent @event,
-        CancellationToken cancellationToken = default
-    );
+    ValueTask<FuncResult<bool>> SendAsync(EmailProcessNotificationEvent @event, CancellationToken cancellationToken = default);
 }

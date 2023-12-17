@@ -40,28 +40,28 @@ public class NotificationSubscriber(
     {
         await base.SetChannelAsync();
 
-        await Channel.ExchangeDeclareAsync(EventBusConstants.NotificationExchangeName, type: ExchangeType.Direct, durable: true);
+        await Channel.ExchangeDeclareAsync(EventBusConstants.NotificationExchangeName, ExchangeType.Direct, true);
 
         await Channel.QueueDeclareAsync(EventBusConstants.ProcessNotificationQueueName, true, false, false);
         await Channel.QueueDeclareAsync(EventBusConstants.RenderNotificationQueueName, true, false, false);
         await Channel.QueueDeclareAsync(EventBusConstants.SendNotificationQueueName, true, false, false);
 
         await Channel.QueueBindAsync(
-            queue: EventBusConstants.ProcessNotificationQueueName,
-            exchange: EventBusConstants.NotificationExchangeName,
-            routingKey: EventBusConstants.ProcessNotificationQueueName
+            EventBusConstants.ProcessNotificationQueueName,
+            EventBusConstants.NotificationExchangeName,
+            EventBusConstants.ProcessNotificationQueueName
         );
 
         await Channel.QueueBindAsync(
-            queue: EventBusConstants.RenderNotificationQueueName,
-            exchange: EventBusConstants.NotificationExchangeName,
-            routingKey: EventBusConstants.RenderNotificationQueueName
+            EventBusConstants.RenderNotificationQueueName,
+            EventBusConstants.NotificationExchangeName,
+            EventBusConstants.RenderNotificationQueueName
         );
 
         await Channel.QueueBindAsync(
-            queue: EventBusConstants.SendNotificationQueueName,
-            exchange: EventBusConstants.NotificationExchangeName,
-            routingKey: EventBusConstants.SendNotificationQueueName
+            EventBusConstants.SendNotificationQueueName,
+            EventBusConstants.NotificationExchangeName,
+            EventBusConstants.SendNotificationQueueName
         );
     }
 

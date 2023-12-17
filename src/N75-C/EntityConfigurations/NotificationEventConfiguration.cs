@@ -10,8 +10,7 @@ public class NotificationEventConfiguration : IEntityTypeConfiguration<Notificat
 {
     public void Configure(EntityTypeBuilder<NotificationEvent> builder)
     {
-        builder
-            .ToTable("NotificationEvents")
+        builder.ToTable("NotificationEvents")
             .HasDiscriminator(notificationEvent => notificationEvent.Type)
             .HasValue<EmailNotificationEvent>(NotificationType.Email);
     }

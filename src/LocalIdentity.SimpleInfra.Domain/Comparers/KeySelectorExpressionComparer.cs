@@ -3,8 +3,9 @@
 namespace LocalIdentity.SimpleInfra.Domain.Comparers;
 
 /// <summary>
-/// Represents a comparer for comparing and sorting expressions of type <see cref="Expression{TDelegate}"/> that represent
-/// predicate functions in a source data type.
+///     Represents a comparer for comparing and sorting expressions of type
+///     <see cref="Expression{TDelegate}" /> that represent
+///     predicate functions in a source data type.
 /// </summary>
 /// <typeparam name="TSource">The type of the source data.</typeparam>
 public class KeySelectorExpressionComparer<TSource> : IComparer<Expression<Func<TSource, object>>>

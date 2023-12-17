@@ -6,27 +6,27 @@ using N74_C.Validators;
 var userToCreate = new User
 {
     FirstName = "ab",
-    LastName = "23",
+    LastName = "23"
 };
 
 var userToUpdate = new User
 {
     Id = Guid.Parse("31125086-4D30-4BE4-BD49-0639EBD5291B"),
     FirstName = "John",
-    LastName = "Doe",
+    LastName = "Doe"
 };
 
 var validUserToCreate = new User
 {
     FirstName = "John",
-    LastName = "Doe",
+    LastName = "Doe"
 };
 
 var validUserToUpdate = new User
 {
     Id = Guid.Parse("392B23AA-DA4C-4D9F-AF54-B8FFB5882FF3"),
     FirstName = "John",
-    LastName = "Doe",
+    LastName = "Doe"
 };
 
 var userValidator = new UserValidator(new UserService());
@@ -36,4 +36,4 @@ var testB = userValidator.ValidateAsync(userToUpdate, options => options.Include
 var testC = userValidator.ValidateAsync(validUserToCreate, options => options.IncludeRuleSets("OnCreate"));
 var testD = userValidator.ValidateAsync(validUserToUpdate, options => options.IncludeRuleSets("OnUpdate"));
 
-Console.WriteLine();            
+Console.WriteLine();

@@ -4,8 +4,8 @@ using LocalIdentity.SimpleInfra.Domain.Enums;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Verifications.Services;
 
-public class VerificationProcessingService
-    (IUserInfoVerificationCodeService userInfoVerificationCodeService, IUserService userService) : IVerificationProcessingService
+public class VerificationProcessingService(IUserInfoVerificationCodeService userInfoVerificationCodeService, IUserService userService)
+    : IVerificationProcessingService
 {
     public async ValueTask<bool> Verify(string code, CancellationToken cancellationToken)
     {

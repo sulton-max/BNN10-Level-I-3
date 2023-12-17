@@ -11,7 +11,7 @@ public abstract class NotificationEvent : Event
     public bool IsSuccessful { get; set; }
 
     public int ResentAttempts { get; set; }
-    
+
     public NotificationType Type { get; set; }
 
     public Dictionary<string, string> Variables { get; set; } = new();

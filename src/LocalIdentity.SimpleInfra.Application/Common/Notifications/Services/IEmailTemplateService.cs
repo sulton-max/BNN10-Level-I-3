@@ -18,9 +18,5 @@ public interface IEmailTemplateService
         CancellationToken cancellationToken = default
     );
 
-    ValueTask<EmailTemplate> CreateAsync(
-        EmailTemplate emailTemplate,
-        bool saveChanges = true,
-        CancellationToken cancellationToken = default
-    );
+    ValueTask<EmailTemplate> CreateAsync(EmailTemplate emailTemplate, bool saveChanges = true, CancellationToken cancellationToken = default);
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using N75_C.Extensions;
 using N75_C.Models.Common;
 using N75_C.Models.Entities;
@@ -8,10 +7,8 @@ using Polly;
 
 namespace N75_C.Services;
 
-public class EmailSenderBackgroundService(
-    IOptions<NotificationSenderSettings> notificationSenderSettings,
-    EmailSenderService emailSenderService
-) : BackgroundService
+public class EmailSenderBackgroundService(IOptions<NotificationSenderSettings> notificationSenderSettings, EmailSenderService emailSenderService)
+    : BackgroundService
 {
     private readonly NotificationSenderSettings _notificationSenderSettings = notificationSenderSettings.Value;
 
@@ -21,17 +18,16 @@ public class EmailSenderBackgroundService(
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            var retryPolicy = Policy
-                .Handle<Exception>()
-                .WaitAndRetryAsync(_notificationSenderSettings.ResendAttemptsThreshold,
+            var retryPolicy = Policy.Handle<Exception>()
+                .WaitAndRetryAsync(
+                    _notificationSenderSettings.ResendAttemptsThreshold,
                     _ => _notificationSenderSettings.ResendIntervalInSeconds > 0
                         ? TimeSpan.FromSeconds(_notificationSenderSettings.ResendAttemptsThreshold)
-                        : TimeSpan.Zero);
+                        : TimeSpan.Zero
+                );
 
-            var failedNotificationEvents =
-                await emailSenderService.GetFailedEventsAsync(_notificationSenderSettings.BatchSize);
-            await retryPolicy.ExecuteAsync(async () =>
-                await ProcessFailedEventsAsync(failedNotificationEvents, stoppingToken));
+            var failedNotificationEvents = await emailSenderService.GetFailedEventsAsync(_notificationSenderSettings.BatchSize);
+            await retryPolicy.ExecuteAsync(async () => await ProcessFailedEventsAsync(failedNotificationEvents, stoppingToken));
 
             await Task.Delay(_notificationSenderSettings.BatchResentIntervalInSeconds, stoppingToken);
         }
@@ -39,37 +35,36 @@ public class EmailSenderBackgroundService(
         Console.WriteLine("Stopped background service");
     }
 
-    private async ValueTask ProcessFailedEventsAsync(
-        List<NotificationEvent> notificationEvents,
-        CancellationToken cancellationToken = default
-    )
+    private async ValueTask ProcessFailedEventsAsync(List<NotificationEvent> notificationEvents, CancellationToken cancellationToken = default)
     {
         var exception = default(Exception?);
 
-        var notificationResults = notificationEvents.Select(async (notificationEvent) =>
-        {
-            if (notificationEvent is EmailNotificationEvent emailNotificationEvent)
+        var notificationResults = notificationEvents.Select(
+            async notificationEvent =>
             {
-                var sendNotificationTask = async () =>
-                    await emailSenderService.SendAsync(emailNotificationEvent.ReceiverEmailAddress,
+                if (notificationEvent is EmailNotificationEvent emailNotificationEvent)
+                {
+                    var sendNotificationTask = async () => await emailSenderService.SendAsync(
+                        emailNotificationEvent.ReceiverEmailAddress,
                         emailNotificationEvent.Subject,
                         emailNotificationEvent.Content,
-                        cancellationToken: cancellationToken);
+                        cancellationToken
+                    );
 
-                var sendNotificationResult = await sendNotificationTask.GetValueAsync();
+                    var sendNotificationResult = await sendNotificationTask.GetValueAsync();
 
-                emailNotificationEvent.IsSuccessful = sendNotificationResult.IsSuccess;
-                emailNotificationEvent.ResentAttempts++;
+                    emailNotificationEvent.IsSuccessful = sendNotificationResult.IsSuccess;
+                    emailNotificationEvent.ResentAttempts++;
 
-                var updateNotificationTask = async () =>
-                    await emailSenderService.UpdateEventAsync(emailNotificationEvent, cancellationToken);
+                    var updateNotificationTask = async () => await emailSenderService.UpdateEventAsync(emailNotificationEvent, cancellationToken);
 
-                await updateNotificationTask.GetValueAsync();
+                    await updateNotificationTask.GetValueAsync();
 
-                if (sendNotificationResult is { IsSuccess: false, Exception: not null })
-                    exception = sendNotificationResult.Exception;
+                    if (sendNotificationResult is { IsSuccess: false, Exception: not null })
+                        exception = sendNotificationResult.Exception;
+                }
             }
-        });
+        );
 
         await Task.WhenAll(notificationResults);
         notificationEvents.RemoveAll(result => result.IsSuccessful);
