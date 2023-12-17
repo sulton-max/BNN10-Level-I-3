@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20231215164146_Initial")]
+    [Migration("20231217121251_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,33 +24,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.AccessToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("ExpiryTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AccessToken");
-                });
 
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.NotificationHistory", b =>
                 {
@@ -125,61 +98,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset?>("DeletedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("ModifiedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 12, 15, 21, 41, 45, 950, DateTimeKind.Unspecified).AddTicks(8246), new TimeSpan(0, 5, 0, 0, 0)),
-                            IsActive = true,
-                            IsDeleted = false,
-                            Type = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 12, 15, 21, 41, 45, 950, DateTimeKind.Unspecified).AddTicks(8278), new TimeSpan(0, 5, 0, 0, 0)),
-                            IsActive = true,
-                            IsDeleted = false,
-                            Type = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 12, 15, 21, 41, 45, 950, DateTimeKind.Unspecified).AddTicks(8280), new TimeSpan(0, 5, 0, 0, 0)),
-                            IsActive = true,
-                            IsDeleted = false,
-                            Type = 2
-                        });
-                });
-
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -188,15 +106,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
                     b.Property<int>("Age")
                         .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("DeletedByUserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("DeletedTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
@@ -208,9 +117,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("IsEmailAddressVerified")
                         .HasColumnType("boolean");
 
@@ -218,12 +124,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
-
-                    b.Property<Guid?>("ModifiedByUserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("ModifiedTime")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -252,40 +152,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserSettings");
-                });
-
-            modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.UserSignInDetails", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset?>("DeletedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("IpAddress")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("ModifiedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserAgent")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserSignInDetails");
                 });
 
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.VerificationCode", b =>
@@ -334,7 +200,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<string>("SendEmailAddress")
+                    b.Property<string>("SenderEmailAddress")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -369,15 +235,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.HasDiscriminator().HasValue(1);
-                });
-
-            modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.AccessToken", b =>
-                {
-                    b.HasOne("LocalIdentity.SimpleInfra.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.NotificationHistory", b =>
@@ -428,8 +285,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.User", b =>
                 {
-                    b.Navigation("UserSettings")
-                        .IsRequired();
+                    b.Navigation("UserSettings");
                 });
 #pragma warning restore 612, 618
         }

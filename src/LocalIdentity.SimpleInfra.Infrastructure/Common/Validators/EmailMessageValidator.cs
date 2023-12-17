@@ -22,7 +22,6 @@ public class EmailMessageValidator : AbstractValidator<EmailMessage>
             NotificationProcessingEvent.OnSending.ToString(),
             () =>
             {
-                RuleFor(history => history.SenderEmailAddress).NotNull().NotEmpty();
                 RuleFor(history => history.ReceiverEmailAddress).NotNull().NotEmpty();
                 RuleFor(history => history.Subject).NotNull().NotEmpty();
                 RuleFor(history => history.Body).NotNull().NotEmpty();

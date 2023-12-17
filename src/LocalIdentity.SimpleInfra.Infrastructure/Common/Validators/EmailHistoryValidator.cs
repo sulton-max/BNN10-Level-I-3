@@ -21,7 +21,7 @@ public class EmailHistoryValidator : AbstractValidator<EmailHistory>
 
                 RuleFor(history => history.ErrorMessage).NotNull().NotEmpty().When(history => !history.IsSuccessful);
                 
-                RuleFor(history => history.SendEmailAddress).NotEmpty().MaximumLength(64);
+                RuleFor(history => history.SenderEmailAddress).NotEmpty().MaximumLength(64);
 
                 RuleFor(history => history.ReceiverEmailAddress).NotEmpty().MaximumLength(64);
             });

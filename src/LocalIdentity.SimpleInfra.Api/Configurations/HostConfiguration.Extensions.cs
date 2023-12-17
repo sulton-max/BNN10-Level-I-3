@@ -6,10 +6,8 @@ using LocalIdentity.SimpleInfra.Api.Data;
 using LocalIdentity.SimpleInfra.Application.Common.EventBus.Brokers;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Brokers;
-using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
-using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
-using LocalIdentity.SimpleInfra.Application.Common.Serialization;
+using LocalIdentity.SimpleInfra.Application.Common.Serializers;
 using LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Caching.Brokers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Brokers;
@@ -18,7 +16,7 @@ using LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Brokers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.EventSubscriber;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Services;
-using LocalIdentity.SimpleInfra.Infrastructure.Common.Serialization;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.Serializers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Persistence.Caching.Brokers;
@@ -144,8 +142,7 @@ public static partial class HostConfiguration
         );
 
         // register repositories
-        builder.Services
-            .AddScoped<IUserRepository, UserRepository>()
+        builder.Services.AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IUserSettingsRepository, UserSettingsRepository>()
             .AddScoped<IAccessTokenRepository, AccessTokenRepository>();
 

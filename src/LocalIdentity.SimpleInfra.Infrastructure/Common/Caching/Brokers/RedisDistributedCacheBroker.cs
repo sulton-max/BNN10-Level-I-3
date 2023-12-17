@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Force.DeepCloner;
-using LocalIdentity.SimpleInfra.Application.Common.Serialization;
+using LocalIdentity.SimpleInfra.Application.Common.Serializers;
 using LocalIdentity.SimpleInfra.Domain.Common.Caching;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using LocalIdentity.SimpleInfra.Persistence.Caching.Brokers;

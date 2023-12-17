@@ -40,7 +40,7 @@ public class EmailRenderingService : IEmailRenderingService
             TimeSpan.FromSeconds(_templateRenderingSettings.RegexMatchTimeoutInSeconds)
         );
 
-        var matches = placeholderRegex.Matches(emailMessage.Template.Content);
+        var matches = placeholderRegex.Matches(emailMessage.EmailTemplate.Content);
 
         if (matches.Any() && !emailMessage.Variables.Any())
             throw new InvalidOperationException("Variables are required for this template.");
@@ -65,12 +65,12 @@ public class EmailRenderingService : IEmailRenderingService
 
         ValidatePlaceholders(templatePlaceholders);
 
-        var messageBuilder = new StringBuilder(emailMessage.Template.Content);
+        var messageBuilder = new StringBuilder(emailMessage.EmailTemplate.Content);
         templatePlaceholders.ForEach(placeholder => messageBuilder.Replace(placeholder.Placeholder, placeholder.Value));
 
         var message = messageBuilder.ToString();
         emailMessage.Body = message;
-        emailMessage.Subject = emailMessage.Template.Subject;
+        emailMessage.Subject = emailMessage.EmailTemplate.Subject;
 
         return ValueTask.FromResult(message);
     }

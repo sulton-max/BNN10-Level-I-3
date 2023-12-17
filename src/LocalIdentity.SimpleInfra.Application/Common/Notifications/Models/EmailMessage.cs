@@ -1,5 +1,5 @@
-using System.Net.Mail;
 using LocalIdentity.SimpleInfra.Domain.Entities;
+using Newtonsoft.Json;
 
 namespace LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 
@@ -11,13 +11,10 @@ public class EmailMessage : NotificationMessage
 
     public string Subject { get; set; } = default!;
 
-    public string Body { get; set; } = default!;
-
-    public EmailTemplate Template { get; set; } = default!;
-
-    public Dictionary<string, string> Variables { get; set; } = default!;
-
-    public bool IsSuccessful { get; set; }
-
-    public string? ErrorMessage { get; set; }
+    [JsonIgnore]
+    public EmailTemplate EmailTemplate
+    {
+        get => (EmailTemplate)Template;
+        set => Template = value;
+    }
 }

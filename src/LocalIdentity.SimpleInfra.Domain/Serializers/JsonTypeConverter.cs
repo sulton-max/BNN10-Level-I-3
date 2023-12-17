@@ -37,6 +37,14 @@ public class JsonTypeConverter<T> : JsonConverter<T> where T : ITypeResolver
         writer.WriteStartObject();
 
         // Write type discriminator
+        var typeValue = typeof(T);
+        if (typeValue.IsAbstract || typeValue.IsInterface)
+        {
+            // Write type discriminator
+            writer.WritePropertyName(value.GetTypeDiscriminatorKey());
+            writer.WriteValue(value.GetTypeDiscriminator());
+        }
+
         writer.WritePropertyName(value!.GetTypeDiscriminatorKey());
         writer.WriteValue(value!.GetTypeDiscriminator());
 

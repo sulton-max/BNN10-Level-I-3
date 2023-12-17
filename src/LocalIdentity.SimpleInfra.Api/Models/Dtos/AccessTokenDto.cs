@@ -2,7 +2,7 @@
 
 public class AccessTokenDto
 {
-    public string Token { get; set; } = default!;
+    public string Token { get; init; } = default!;
 
-    public DateTimeOffset ExpiryTime { get; set; }
+    public DateTimeOffset ExpiryTime { get; init; }
 }

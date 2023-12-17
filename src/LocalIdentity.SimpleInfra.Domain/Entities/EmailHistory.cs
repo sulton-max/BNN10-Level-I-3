@@ -10,7 +10,7 @@ public class EmailHistory : NotificationHistory
         Type = NotificationType.Email;
     }
 
-    public string SendEmailAddress { get; set; } = default!;
+    public string SenderEmailAddress { get; set; } = default!;
 
     public string ReceiverEmailAddress { get; set; } = default!;
 

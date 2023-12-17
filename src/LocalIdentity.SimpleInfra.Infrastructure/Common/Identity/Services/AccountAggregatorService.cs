@@ -19,6 +19,7 @@ public class AccountAggregatorService(
     public async ValueTask<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default)
     {
         // Create user and user settings
+        user.Role = RoleType.User;
         var createdUser = await userService.CreateAsync(user, cancellationToken: cancellationToken);
         await userSettingsService.CreateAsync(
             new UserSettings
@@ -29,11 +30,10 @@ public class AccountAggregatorService(
         );
 
         // send welcome email
-        var systemUser = await userService.GetSystemUserAsync(cancellationToken: cancellationToken);
+        // var systemUser = await userService.GetSystemUserAsync(cancellationToken: cancellationToken);
 
         var welcomeNotificationEvent = new ProcessNotificationEvent
         {
-            SenderUserId = systemUser.Id,
             ReceiverUserId = createdUser.Id,
             TemplateType = NotificationTemplateType.WelcomeNotification,
             Variables = new Dictionary<string, string>
@@ -59,7 +59,6 @@ public class AccountAggregatorService(
         // send verification email
         var sendVerificationEvent = new EmailProcessNotificationEvent
         {
-            SenderUserId = systemUser.Id,
             ReceiverUserId = createdUser.Id,
             TemplateType = NotificationTemplateType.EmailAddressVerificationNotification,
             Variables = new Dictionary<string, string>

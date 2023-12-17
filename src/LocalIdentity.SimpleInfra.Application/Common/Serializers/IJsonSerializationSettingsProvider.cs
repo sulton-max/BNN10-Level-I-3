@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace LocalIdentity.SimpleInfra.Application.Common.Serialization;
+namespace LocalIdentity.SimpleInfra.Application.Common.Serializers;
 
 public interface IJsonSerializationSettingsProvider
 {

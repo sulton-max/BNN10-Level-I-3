@@ -26,9 +26,9 @@ public class EmailSenderService : IEmailSenderService
         );
         if (!validationResult.IsValid) throw new ValidationException(validationResult.Errors);
 
-        foreach (var smsSenderBroker in _emailSenderBrokers)
+        foreach (var emailSenderBroker in _emailSenderBrokers)
         {
-            var sendNotificationTask = () => smsSenderBroker.SendAsync(emailMessage, cancellationToken);
+            var sendNotificationTask = () => emailSenderBroker.SendAsync(emailMessage, cancellationToken);
             var result = await sendNotificationTask.GetValueAsync();
 
             emailMessage.IsSuccessful = result.IsSuccess;

@@ -1,8 +1,9 @@
 ﻿using System.Text;
 using LocalIdentity.SimpleInfra.Application.Common.EventBus.Brokers;
-using LocalIdentity.SimpleInfra.Application.Common.Serialization;
+using LocalIdentity.SimpleInfra.Application.Common.Serializers;
 using LocalIdentity.SimpleInfra.Domain.Common.Events;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Brokers;
@@ -23,6 +24,9 @@ public class RabbitMqEventBusBroker(
         };
 
         var serializerSettings = jsonSerializationSettingsProvider.Get(true);
+        serializerSettings.ContractResolver = new DefaultContractResolver();
+        serializerSettings.TypeNameHandling = TypeNameHandling.All;
+
         // serializerSettings.Converters = [new EventConverter()];
 
         // var test = new JsonSerializerSettings

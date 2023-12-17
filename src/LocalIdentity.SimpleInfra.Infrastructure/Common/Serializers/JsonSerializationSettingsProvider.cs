@@ -1,9 +1,9 @@
 ﻿using Force.DeepCloner;
-using LocalIdentity.SimpleInfra.Application.Common.Serialization;
+using LocalIdentity.SimpleInfra.Application.Common.Serializers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Serialization;
+namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Serializers;
 
 public class JsonSerializationSettingsProvider : IJsonSerializationSettingsProvider
 {

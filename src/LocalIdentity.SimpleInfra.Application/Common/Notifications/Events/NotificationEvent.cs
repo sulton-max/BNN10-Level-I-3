@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
 
-[JsonConverter(typeof(JsonTypeConverter<NotificationEvent>))]
+// [JsonConverter(typeof(JsonTypeConverter<NotificationEvent>))]
 public class NotificationEvent : Event
 {
     public Guid SenderUserId { get; init; }

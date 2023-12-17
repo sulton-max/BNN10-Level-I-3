@@ -5,7 +5,7 @@ using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
-using LocalIdentity.SimpleInfra.Application.Common.Serialization;
+using LocalIdentity.SimpleInfra.Application.Common.Serializers;
 using LocalIdentity.SimpleInfra.Domain.Common.Query;
 using LocalIdentity.SimpleInfra.Domain.Constants;
 using LocalIdentity.SimpleInfra.Domain.Entities;
@@ -98,37 +98,35 @@ public class NotificationSubscriber(
         // processNotificationEvent.SenderUserId = senderUser!.Id;
         var receiverUserQuery = new QuerySpecification<User>(1, 1, true);
         receiverUserQuery.FilteringOptions.Add(user => user.Id.Equals(processNotificationEvent.ReceiverUserId));
-        receiverUserQuery.IncludingOptions.Add(user => user.UserSettings);
+        receiverUserQuery.IncludingOptions.Add(user => user.UserSettings!);
 
         // userService.Get(user => user.EmailAddress == processNotificationEvent.ReceiverEmailAddress, true);
         var receiverUser = (await userService.GetAsync(receiverUserQuery, cancellationToken)).First();
 
         // If notification provider type is not specified, get from receiver user settings
-        if (!processNotificationEvent.Type.HasValue && receiverUser!.UserSettings.PreferredNotificationType.HasValue)
+        if (!processNotificationEvent.Type.HasValue && receiverUser!.UserSettings!.PreferredNotificationType.HasValue)
             processNotificationEvent.Type = receiverUser!.UserSettings.PreferredNotificationType!.Value;
 
         // If user not specified preferred notification type get from settings
         if (!processNotificationEvent.Type.HasValue)
             processNotificationEvent.Type = _notificationSettings.DefaultNotificationType;
 
-        if (processNotificationEvent.Type == NotificationType.Email)
+        var renderNotificationEvent = new RenderNotificationEvent
         {
-            var renderNotificationEvent = new RenderNotificationEvent
-            {
-                SenderUserId = processNotificationEvent.SenderUserId,
-                ReceiverUserId = processNotificationEvent.ReceiverUserId,
-                Template = (await emailTemplateService.GetByTypeAsync(processNotificationEvent.TemplateType, cancellationToken: cancellationToken))!,
-                SenderUser = senderUser!,
-                ReceiverUser = (await userService.GetByIdAsync(processNotificationEvent.SenderUserId, cancellationToken: cancellationToken))!,
-            };
+            SenderUserId = senderUser!.Id,
+            ReceiverUserId = receiverUser.Id,
+            Template = (await emailTemplateService.GetByTypeAsync(processNotificationEvent.TemplateType, cancellationToken: cancellationToken))!,
+            SenderUser = senderUser,
+            ReceiverUser = receiverUser,
+            Variables = processNotificationEvent.Variables ?? new Dictionary<string, string>()
+        };
 
-            await eventBusBroker.PublishAsync(
-                renderNotificationEvent,
-                EventBusConstants.NotificationExchangeName,
-                EventBusConstants.RenderNotificationQueueName,
-                cancellationToken
-            );
-        }
+        await eventBusBroker.PublishAsync(
+            renderNotificationEvent,
+            EventBusConstants.NotificationExchangeName,
+            EventBusConstants.RenderNotificationQueueName,
+            cancellationToken
+        );
     }
 
     private async ValueTask RenderNotificationAsync(RenderNotificationEvent renderNotificationEvent, CancellationToken cancellationToken)
@@ -142,7 +140,7 @@ public class NotificationSubscriber(
             {
                 SenderEmailAddress = renderNotificationEvent.SenderUser.EmailAddress,
                 ReceiverEmailAddress = renderNotificationEvent.ReceiverUser.EmailAddress,
-                Template = (EmailTemplate)renderNotificationEvent.Template,
+                EmailTemplate = (EmailTemplate)renderNotificationEvent.Template,
                 Variables = renderNotificationEvent.Variables
             };
 
@@ -175,9 +173,12 @@ public class NotificationSubscriber(
             await emailSenderService.SendAsync(emailMessage, cancellationToken);
 
             var history = mapper.Map<EmailHistory>(emailMessage);
+            history.SenderUserId = sendNotificationEvent.SenderUserId;
+            history.ReceiverUserId = sendNotificationEvent.ReceiverUserId;
+
             await emailHistoryService.CreateAsync(history, cancellationToken: cancellationToken);
 
-            if (history.IsSuccessful) throw new InvalidOperationException("Email history is not created");
+            if (!history.IsSuccessful) throw new InvalidOperationException("Email history is not created");
         }
     }
 }

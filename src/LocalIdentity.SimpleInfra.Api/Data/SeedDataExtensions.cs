@@ -35,9 +35,8 @@ public static class SeedDataExtensions
                 FirstName = "System",
                 LastName = string.Empty,
                 Age = 0,
-                EmailAddress = string.Empty,
+                EmailAddress = "sultonbek.rakhimov.recovery@gmail.com",
                 PasswordHash = string.Empty,
-                CreatedTime = DateTimeOffset.UtcNow,
                 Role = RoleType.System
             }
         );
