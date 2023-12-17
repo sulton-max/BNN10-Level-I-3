@@ -57,7 +57,7 @@ public class EntityRepositoryBase<TEntity, TContext>(TContext dbContext, ICacheB
 
         return foundEntities;
     }
-
+    
     protected async ValueTask<TEntity?> GetByIdAsync(Guid id, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         var initialQuery = DbContext.Set<TEntity>().Where(entity => true);

@@ -48,7 +48,7 @@ public static partial class HostConfiguration
 
         return builder;
     }
-    
+
     private static WebApplicationBuilder AddValidators(this WebApplicationBuilder builder)
     {
         // register configurations 
@@ -144,7 +144,10 @@ public static partial class HostConfiguration
         );
 
         // register repositories
-        builder.Services.AddScoped<IUserRepository, UserRepository>().AddScoped<IAccessTokenRepository, AccessTokenRepository>();
+        builder.Services
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IUserSettingsRepository, UserSettingsRepository>()
+            .AddScoped<IAccessTokenRepository, AccessTokenRepository>();
 
         // register helper foundation services
         builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
@@ -152,7 +155,9 @@ public static partial class HostConfiguration
             .AddTransient<IAccessTokenGeneratorService, AccessTokenGeneratorService>();
 
         // register foundation data access services
-        builder.Services.AddScoped<IUserService, UserService>().AddScoped<IAccessTokenService, AccessTokenService>();
+        builder.Services.AddScoped<IUserService, UserService>()
+            .AddScoped<IUserSettingsService, UserSettingsService>()
+            .AddScoped<IAccessTokenService, AccessTokenService>();
 
         // register other higher services
         builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>()

@@ -19,8 +19,7 @@ public static class LinqExtensions
     public static IQueryable<TSource> ApplySpecification<TSource>(this IQueryable<TSource> source, QuerySpecification<TSource> querySpecification)
         where TSource : class, IEntity
     {
-        source = source
-            .ApplyPredicates(querySpecification)
+        source = source.ApplyPredicates(querySpecification)
             .ApplyOrdering(querySpecification)
             .ApplyIncluding(querySpecification)
             .ApplyPagination(querySpecification);
@@ -84,7 +83,7 @@ public static class LinqExtensions
         where TSource : class, IEntity
     {
         querySpecification.IncludingOptions.ForEach(includeOption => source = source.Include(includeOption));
-    
+
         return source;
     }
 
@@ -149,6 +148,19 @@ public static class LinqExtensions
     /// <summary>
     /// Applies pagination to queryable source
     /// </summary>
+    /// <typeparam name="TSource">The type of elements in the queryable source.</typeparam>
+    /// <param name="source">Queryable source to apply specifications to.</param>
+    /// <param name="pageSize">Page size</param>
+    /// <param name="pageToken">Page token</param>
+    /// <returns>Same queryable resource with pagination applied</returns>
+    public static IQueryable<TSource> ApplyPagination<TSource>(this IQueryable<TSource> source, uint pageSize, uint pageToken) where TSource : IEntity
+    {
+        return source.Skip((int)((pageToken - 1) * pageSize)).Take((int)pageSize);
+    }
+
+    /// <summary>
+    /// Applies pagination to enumerable source
+    /// </summary>
     /// <typeparam name="TSource">The type of elements in the enumerable source.</typeparam>
     /// <param name="source">Enumerable source to apply specifications to.</param>
     /// <param name="querySpecification">The query specification to apply.</param>
@@ -159,7 +171,22 @@ public static class LinqExtensions
         return source.Skip((int)((querySpecification.PaginationOptions.PageToken - 1) * querySpecification.PaginationOptions.PageSize))
             .Take((int)querySpecification.PaginationOptions.PageSize);
     }
-    
+
+
+    /// <summary>
+    /// Applies pagination to enumerable source
+    /// </summary>
+    /// <typeparam name="TSource">The type of elements in the enumerable source.</typeparam>
+    /// <param name="source">Queryable source to apply specifications to.</param>
+    /// <param name="pageSize">Page size</param>
+    /// <param name="pageToken">Page token</param>
+    /// <returns>Same enumerable resource with pagination applied</returns>
+    public static IEnumerable<TSource> ApplyPagination<TSource>(this IEnumerable<TSource> source, uint pageSize, uint pageToken)
+        where TSource : IEntity
+    {
+        return source.Skip((int)((pageToken - 1) * pageSize)).Take((int)pageSize);
+    }
+
     public static IQueryable<TSource> ApplyPagination<TSource>(this IQueryable<TSource> source, FilterPagination paginationOptions)
     {
         // var pageSize = paginationOptions.DynamicPageSize;

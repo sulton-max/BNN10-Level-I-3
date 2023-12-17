@@ -10,4 +10,8 @@ public class UserSettingsRepository(IdentityDbContext dbContext, ICacheBroker ca
 {
     public new ValueTask<UserSettings?> GetByIdAsync(Guid userId, bool asNoTracking = false, CancellationToken cancellationToken = default) =>
         base.GetByIdAsync(userId, asNoTracking, cancellationToken);
+
+    public new ValueTask<UserSettings>
+        CreateAsync(UserSettings userSettings, bool saveChanges = true, CancellationToken cancellationToken = default) =>
+        base.CreateAsync(userSettings, saveChanges, cancellationToken);
 }

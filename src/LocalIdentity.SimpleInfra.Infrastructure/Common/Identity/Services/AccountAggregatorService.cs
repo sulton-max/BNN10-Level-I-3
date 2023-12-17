@@ -11,14 +11,22 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 
 public class AccountAggregatorService(
     IUserService userService,
+    IUserSettingsService userSettingsService,
     IUserInfoVerificationCodeService userInfoVerificationCodeService,
     IEventBusBroker eventBusBroker
 ) : IAccountAggregatorService
 {
     public async ValueTask<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default)
     {
-        // create user
+        // Create user and user settings
         var createdUser = await userService.CreateAsync(user, cancellationToken: cancellationToken);
+        await userSettingsService.CreateAsync(
+            new UserSettings
+            {
+                Id = createdUser.Id
+            },
+            cancellationToken: cancellationToken
+        );
 
         // send welcome email
         var systemUser = await userService.GetSystemUserAsync(cancellationToken: cancellationToken);

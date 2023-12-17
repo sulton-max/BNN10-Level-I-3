@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
+using LocalIdentity.SimpleInfra.Domain.Common.Query;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 using LocalIdentity.SimpleInfra.Persistence.Repositories.Interfaces;
@@ -14,6 +15,11 @@ public class UserService(IUserRepository userRepository) : IUserService
         return userRepository.Get(predicate, asNoTracking);
     }
 
+    public ValueTask<IList<User>> GetAsync(QuerySpecification<User> querySpecification, CancellationToken cancellationToken = default)
+    {
+        return userRepository.GetAsync(querySpecification, cancellationToken);
+    }
+
     public ValueTask<User?> GetByIdAsync(Guid userId, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
         return userRepository.GetByIdAsync(userId, asNoTracking, cancellationToken);
@@ -21,18 +27,7 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async ValueTask<User> GetSystemUserAsync(bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
-        return await userRepository.Get(user => user.Role == RoleType.System, asNoTracking).FirstAsync(cancellationToken);
-    }
-
-    public async ValueTask<User?> GetByEmailAddressAsync(
-        string emailAddress,
-        bool asNoTracking = false,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return await userRepository.Get(asNoTracking: asNoTracking)
-            .Include(user => user.Role)
-            .FirstOrDefaultAsync(user => user.EmailAddress == emailAddress, cancellationToken: cancellationToken);
+        return await Get(user => user.Role == RoleType.System, asNoTracking).FirstAsync(cancellationToken);
     }
 
     public async Task<Guid?> GetIdByEmailAddressAsync(string emailAddress, CancellationToken cancellationToken = default)

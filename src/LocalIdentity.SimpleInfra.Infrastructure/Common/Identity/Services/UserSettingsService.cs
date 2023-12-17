@@ -4,19 +4,11 @@ using LocalIdentity.SimpleInfra.Persistence.Repositories.Interfaces;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 
-public class UserSettingsService : IUserSettingsService
+public class UserSettingsService(IUserSettingsRepository userSettingsRepository) : IUserSettingsService
 {
-    private readonly IUserSettingsRepository _userSettingsRepository;
+    public ValueTask<UserSettings?> GetByIdAsync(Guid userSettingsId, bool asNoTracking = false, CancellationToken cancellationToken = default) =>
+        userSettingsRepository.GetByIdAsync(userSettingsId, asNoTracking, cancellationToken);
 
-    public UserSettingsService(IUserSettingsRepository userSettingsRepository)
-    {
-        _userSettingsRepository = userSettingsRepository;
-    }
-
-    public ValueTask<UserSettings?> GetByIdAsync(
-        Guid userSettingsId,
-        bool asNoTracking = false,
-        CancellationToken cancellationToken = default
-    ) =>
-        _userSettingsRepository.GetByIdAsync(userSettingsId, asNoTracking, cancellationToken);
+    public ValueTask<UserSettings> CreateAsync(UserSettings userSettings, bool saveChanges = true, CancellationToken cancellationToken = default)
+        => userSettingsRepository.CreateAsync(userSettings, saveChanges, cancellationToken);
 }

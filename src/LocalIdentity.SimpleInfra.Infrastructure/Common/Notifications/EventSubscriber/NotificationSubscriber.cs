@@ -6,6 +6,7 @@ using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Serialization;
+using LocalIdentity.SimpleInfra.Domain.Common.Query;
 using LocalIdentity.SimpleInfra.Domain.Constants;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 using LocalIdentity.SimpleInfra.Domain.Enums;
@@ -95,7 +96,12 @@ public class NotificationSubscriber(
             : await userService.GetSystemUserAsync(true, cancellationToken);
 
         // processNotificationEvent.SenderUserId = senderUser!.Id;
-        var receiverUser = await userService.GetByIdAsync(processNotificationEvent.ReceiverUserId, cancellationToken: cancellationToken);
+        var receiverUserQuery = new QuerySpecification<User>(1, 1, true);
+        receiverUserQuery.FilteringOptions.Add(user => user.Id.Equals(processNotificationEvent.ReceiverUserId));
+        receiverUserQuery.IncludingOptions.Add(user => user.UserSettings);
+
+        // userService.Get(user => user.EmailAddress == processNotificationEvent.ReceiverEmailAddress, true);
+        var receiverUser = (await userService.GetAsync(receiverUserQuery, cancellationToken)).First();
 
         // If notification provider type is not specified, get from receiver user settings
         if (!processNotificationEvent.Type.HasValue && receiverUser!.UserSettings.PreferredNotificationType.HasValue)
