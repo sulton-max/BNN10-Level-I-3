@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using AirBnb.Api.Configurations;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
@@ -219,6 +220,15 @@ public static partial class HostConfiguration
         builder.Services.AddFluentValidationAutoValidation();
 
         return builder;
+    }
+
+    private static async Task<WebApplication> MigrateDatabaseAsync(this WebApplication app)
+    {
+        var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+        await scopeFactory.MigrateAsync<IdentityDbContext>();
+        await scopeFactory.MigrateAsync<NotificationDbContext>();
+
+        return app;
     }
 
     private static async ValueTask<WebApplication> SeedDataAsync(this WebApplication app)
