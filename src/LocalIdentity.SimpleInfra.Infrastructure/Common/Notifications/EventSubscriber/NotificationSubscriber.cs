@@ -96,6 +96,12 @@ public class NotificationSubscriber(
             : await userService.GetSystemUserAsync(true, cancellationToken);
 
         // processNotificationEvent.SenderUserId = senderUser!.Id;
+        // User_Single_234234
+        // User_Collection-234234   
+        
+        // User_2342342 - [ User ]
+        // User_2342342 - User
+        
         var receiverUserQuery = new QuerySpecification<User>(1, 1, true);
         receiverUserQuery.FilteringOptions.Add(user => user.Id.Equals(processNotificationEvent.ReceiverUserId));
         receiverUserQuery.IncludingOptions.Add(user => user.UserSettings!);

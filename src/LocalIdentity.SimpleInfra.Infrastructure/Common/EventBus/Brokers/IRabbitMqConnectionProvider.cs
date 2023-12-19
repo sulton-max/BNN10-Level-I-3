@@ -5,22 +5,15 @@ using RabbitMQ.Client;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.EventBus.Brokers;
 
-public class RabbitMqConnectionProvider : IRabbitMqConnectionProvider
+public class RabbitMqConnectionProvider(IOptions<RabbitMqConnectionSettings> rabbitMqConnectionSettings) : IRabbitMqConnectionProvider
 {
-    private readonly ConnectionFactory _connectionFactory;
+    private readonly ConnectionFactory _connectionFactory = new()
+    {
+        HostName = rabbitMqConnectionSettings.Value.HostName,
+        Port = rabbitMqConnectionSettings.Value.Port
+    };
 
     private IConnection? _connection;
-
-    public RabbitMqConnectionProvider(IOptions<RabbitMqConnectionSettings> rabbitMqConnectionSettings)
-    {
-        var rabbitMqConnectionSettings1 = rabbitMqConnectionSettings.Value;
-
-        _connectionFactory = new ConnectionFactory
-        {
-            HostName = rabbitMqConnectionSettings1.HostName,
-            Port = rabbitMqConnectionSettings1.Port
-        };
-    }
 
     public async ValueTask<IChannel> CreateChannelAsync()
     {

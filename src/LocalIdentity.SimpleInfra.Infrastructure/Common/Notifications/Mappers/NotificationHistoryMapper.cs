@@ -2,7 +2,7 @@
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 
-namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Mappers;
+namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Mappers;
 
 public class NotificationHistoryMapper : Profile
 {

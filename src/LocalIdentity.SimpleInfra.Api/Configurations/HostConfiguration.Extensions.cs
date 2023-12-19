@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Text;
-using AirBnb.Api.Configurations;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;

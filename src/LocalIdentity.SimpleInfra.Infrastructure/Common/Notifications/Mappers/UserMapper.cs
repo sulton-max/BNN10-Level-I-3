@@ -2,7 +2,7 @@
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Models;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 
-namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Mappers;
+namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Mappers;
 
 public class UserMapper : Profile
 {

@@ -2,7 +2,7 @@
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Events;
 using LocalIdentity.SimpleInfra.Application.Common.Notifications.Models;
 
-namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Mappers;
+namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications.Mappers;
 
 public class NotificationRequestMapper : Profile
 {

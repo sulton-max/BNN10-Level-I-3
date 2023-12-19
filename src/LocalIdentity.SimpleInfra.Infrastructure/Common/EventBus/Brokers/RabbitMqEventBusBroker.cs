@@ -22,23 +22,10 @@ public class RabbitMqEventBusBroker(
         {
             Persistent = true
         };
-
+        
         var serializerSettings = jsonSerializationSettingsProvider.Get(true);
         serializerSettings.ContractResolver = new DefaultContractResolver();
         serializerSettings.TypeNameHandling = TypeNameHandling.All;
-
-        // serializerSettings.Converters = [new EventConverter()];
-
-        // var test = new JsonSerializerSettings
-        // {
-        //     PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-        //     //Formatting = Formatting.Indented,
-        //     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        //     //ContractResolver = new CamelCasePropertyNamesContractResolver(),
-        //     //NullValueHandling = NullValueHandling.Ignore
-        // };
-        //
-        // var tesB = JsonConvert.SerializeObject(@event, test);
 
         var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event, serializerSettings));
         await channel.BasicPublishAsync(exchange, routingKey, properties, body);

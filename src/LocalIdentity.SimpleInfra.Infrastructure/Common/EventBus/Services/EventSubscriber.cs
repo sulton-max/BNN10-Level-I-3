@@ -74,8 +74,9 @@ public abstract class EventSubscriber<TEvent> : IEventSubscriber where TEvent : 
     protected virtual async ValueTask HandleInternalAsync(object? sender, BasicDeliverEventArgs ea, CancellationToken cancellationToken)
     {
         var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-        var @event = (TEvent)JsonConvert.DeserializeObject(message, typeof(TEvent), _jsonSerializerSettings)!;
+        var @event = JsonConvert.DeserializeObject<TEvent>(message, _jsonSerializerSettings)!;
         @event.Redelivered = ea.Redelivered;
+        
         var result = await ProcessAsync(@event, cancellationToken);
 
         if (result.Result)
